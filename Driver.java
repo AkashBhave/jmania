@@ -1,5 +1,5 @@
 package jmania;
-import jmania.panels.PanelHome;
+import jmania.panels.*; 
 import javax.swing.JFrame;
 
 public class Driver {
@@ -11,7 +11,8 @@ public class Driver {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(new PanelHome());
         frame.setVisible(true);
-   }
+    
+    }
 }
          
          
