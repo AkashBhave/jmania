@@ -14,6 +14,9 @@ public class Window extends JFrame {
     
     private void createGUI() {
     
+        ImageIcon logo = new ImageIcon(System.getProperty("user.dir") + "/assets/logoSquare.png");
+        setIconImage(logo.getImage());
+    
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
