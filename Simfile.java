@@ -1,3 +1,8 @@
+/**
+ * Short for simulation file.
+ * Reads and parses .csm files
+ */
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,17 +17,29 @@ import java.util.List;
 public class Simfile
 {
 
+   /**
+    * The filename is an argument taken while making a new object.
+    * It can be publically called using Simfile.filename
+    */
    public String filename;
+   
    private BufferedReader sf;
    private List<String> simlist = new ArrayList<String>();
    private String[] sim; 
+   
    private String[] bpms;
+   
    private String line;
    private String notestr;
    private List<String> noteslist = new ArrayList<String>();
    private List<List<String>> note = new ArrayList<List<String>>();
+
+   private List<List<String>> note1 = new ArrayList<List<String>>();
+   
    private double[][] a;
    private Matcher m;
+   
+   private double offset;
    
    public Simfile(String filename) throws Exception
    {
@@ -117,6 +134,7 @@ public class Simfile
             
    public List<List<String>> Notes()
    {
+      note = new ArrayList<List<String>>();
       for (int i = 0; i < sim.length; i++)
       {
          if (sim[i].contains("#NOTES:"))
@@ -141,5 +159,46 @@ public class Simfile
          }
       }
       return note;
+   }
+   
+   public List<List<String>> NotesTime()
+   {
+      offset = this.Offset();
+      note1 = this.Notes();
+      
+      double[][] bpmarray = this.BPM();
+      int bpmarraysize = bpmarray.length;
+      int bpmindex = 0;
+      double currentBPM = bpmarray[0][1];
+      double currentBPS = currentBPM/60;
+      double currentBPuS = currentBPS/1000000;
+
+      List<List<String>> notestime = new ArrayList<List<String>>();
+      
+      double ts = offset;
+      
+      for (int i = 0; i < note1.size(); i++)
+      {
+         for (int a = 0; a < note1.get(i).size(); a++) // we have to evaluate BPM in real time when adding stuff so maybe add a while loop or something in here
+         {
+            List<String> tmp = new ArrayList<String>();
+            tmp.add(Double.toString(ts));
+            tmp.add(note1.get(i).get(a));
+            notestime.add(tmp);
+            ts += currentBPS/note1.get(i).size();
+            if (bpmindex < bpmarraysize-1 && bpmindex+1 <= bpmarraysize-1)                                    
+            {
+               if (i >= bpmarray[bpmindex+1][0]) // be careful of >= idk what will happen
+               {
+                  //System.out.println("WARNING: BPM HAS CHANGED");
+                  currentBPM = bpmarray[bpmindex+1][1];
+                  currentBPS = currentBPM/60;
+                  currentBPuS = currentBPS/1000000;
+                  bpmindex++;
+               }
+            }
+         }
+      }
+      return notestime;
    }
 }
