@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class simtest
+public class Simtest
 {
    public static void main(String[] args) throws Exception
    {
