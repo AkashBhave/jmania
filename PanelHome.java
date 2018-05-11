@@ -19,6 +19,7 @@ public class PanelHome extends JPanel {
     private void createGUI() {
 
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, 450));
+
         JPanel buttons = new JPanel();
         buttons.setOpaque(false);
         buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 75, 0));
