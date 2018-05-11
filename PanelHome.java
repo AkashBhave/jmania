@@ -40,7 +40,7 @@ public class PanelHome extends JPanel {
         JButton play = new JButton("Play");
         play.setFocusPainted(false);
         play.addActionListener(event -> {
-            SwingUtilities.invokeLater(() -> owner.showView(new PanelCredits(owner, Driver.width, Driver.height)));
+            SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
         });
         play.setPreferredSize(buttonDimension);
         play.setFont(buttonFont);
