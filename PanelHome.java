@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class PanelHome extends JPanel {
 
@@ -15,7 +14,6 @@ public class PanelHome extends JPanel {
         this.owner = owner;
 
         createGUI();
-
     }
 
     private void createGUI() {
@@ -26,15 +24,14 @@ public class PanelHome extends JPanel {
         buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 75, 0));
         add(buttons);
 
-        Dimension buttonDimension = new Dimension(120, 45);
-        Font buttonFont = new Font("Courier New", Font.PLAIN, 17);
+        Dimension buttonDimension = new Dimension(140, 45);
+        Font buttonFont = Driver.font;
 
         JButton settings = new JButton("Settings");
         settings.setFocusPainted(false);
         settings.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelCredits(owner, Driver.width, Driver.height)));
         });
-
         settings.setPreferredSize(buttonDimension);
         settings.setFont(buttonFont);
         buttons.add(settings);
@@ -44,7 +41,6 @@ public class PanelHome extends JPanel {
         play.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelCredits(owner, Driver.width, Driver.height)));
         });
-
         play.setPreferredSize(buttonDimension);
         play.setFont(buttonFont);
         buttons.add(play);
@@ -61,12 +57,9 @@ public class PanelHome extends JPanel {
     }
 
     public void paintComponent(Graphics g) {
-
-        ImageIcon logo = new ImageIcon(System.getProperty("user.dir") + "/assets/logoBanner.png");
-        g.setColor(new Color(240, 255, 240));
+        ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/logoBanner.png");
+        g.setColor(Driver.bgColor);
         g.fillRect(0, 0, width, height);
         g.drawImage(logo.getImage(), 320, 100, 600, 300, null, null);
-
     }
-
 }
