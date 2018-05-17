@@ -1,20 +1,23 @@
 import javax.swing.*;
-import java.awt.event.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+@SuppressWarnings("serial")
 public class PanelHome extends JPanel {
 
     private int width;
     private int height;
     final private Window owner;
+    private JButton play;
+    private JButton settings;
+    private JButton credits;
 
     public PanelHome(Window owner, int width, int height) {
         super();
         this.width = width;
         this.height = height;
         this.owner = owner;
-        setFocusable(true);
-        requestFocusInWindow();
 
         createGUI();
     }
@@ -31,7 +34,7 @@ public class PanelHome extends JPanel {
         Dimension buttonDimension = new Dimension(140, 45);
         Font buttonFont = Driver.font;
 
-        JButton settings = new JButton("Settings");
+        settings = new JButton("Settings");
         settings.setFocusPainted(false);
         settings.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelSettings(owner, Driver.width, Driver.height)));
@@ -40,7 +43,7 @@ public class PanelHome extends JPanel {
         settings.setFont(buttonFont);
         buttons.add(settings);
 
-        JButton play = new JButton("Play");
+        play = new JButton("Play");
         play.setFocusPainted(false);
         play.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
@@ -49,7 +52,7 @@ public class PanelHome extends JPanel {
         play.setFont(buttonFont);
         buttons.add(play);
 
-        JButton credits = new JButton("Credits");
+        credits = new JButton("Credits");
         credits.setFocusPainted(false);
         credits.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelCredits(owner, Driver.width, Driver.height)));
@@ -57,29 +60,45 @@ public class PanelHome extends JPanel {
         credits.setPreferredSize(buttonDimension);
         credits.setFont(buttonFont);
         buttons.add(credits);
-        
+
+        int arrowMap = JComponent.WHEN_IN_FOCUSED_WINDOW;
+        InputMap imap = this.getInputMap(arrowMap);
+        KeyStroke leftKey = KeyStroke.getKeyStroke("LEFT");
+        KeyStroke rightKey = KeyStroke.getKeyStroke("RIGHT");
+        KeyStroke upKey = KeyStroke.getKeyStroke("UP");
+        imap.put(leftKey, "settings");
+        imap.put(rightKey, "credits");
+        imap.put(upKey, "select");
+
+        ActionMap amap = this.getActionMap();
+        amap.put("settings", new LeftArrowAction());
+        amap.put("credits", new RightArrowAction());
+        amap.put("select", new UpArrowAction());
+
+        owner.requestFocus();
 
     }
-    
-    public boolean isFocusTraversable ( ) {
-      return true ;
+
+    @SuppressWarnings("serial")
+    private class LeftArrowAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            settings.doClick();
+        }
     }
-    
-    private class MyKeyListener extends KeyAdapter {
-      
-      public void keyPressed (KeyEvent e) {
-         System.out.println(e.getKeyText (e.getKeyCode()));	
-      }
 
-      public void keyReleased (KeyEvent e) {
-         System.out.println(e.getKeyText(e.getKeyCode()));	
-      }
+    @SuppressWarnings("serial")
+    private class RightArrowAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            credits.doClick();
+        }
+    }
 
-      public void keyTyped (KeyEvent e) {
-         System.out.println(e.getKeyChar());	
-      }
-   }
-
+    @SuppressWarnings("serial")
+    private class UpArrowAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            play.doClick();
+        }
+    }
 
     public void paintComponent(Graphics g) {
         ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/logoBanner.png");
