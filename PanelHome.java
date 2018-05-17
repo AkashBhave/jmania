@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.event.*;
 import java.awt.*;
 
 public class PanelHome extends JPanel {
@@ -12,6 +13,8 @@ public class PanelHome extends JPanel {
         this.width = width;
         this.height = height;
         this.owner = owner;
+        setFocusable(true);
+        requestFocusInWindow();
 
         createGUI();
     }
@@ -54,8 +57,29 @@ public class PanelHome extends JPanel {
         credits.setPreferredSize(buttonDimension);
         credits.setFont(buttonFont);
         buttons.add(credits);
+        
 
     }
+    
+    public boolean isFocusTraversable ( ) {
+      return true ;
+    }
+    
+    private class MyKeyListener extends KeyAdapter {
+      
+      public void keyPressed (KeyEvent e) {
+         System.out.println(e.getKeyText (e.getKeyCode()));	
+      }
+
+      public void keyReleased (KeyEvent e) {
+         System.out.println(e.getKeyText(e.getKeyCode()));	
+      }
+
+      public void keyTyped (KeyEvent e) {
+         System.out.println(e.getKeyChar());	
+      }
+   }
+
 
     public void paintComponent(Graphics g) {
         ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/logoBanner.png");

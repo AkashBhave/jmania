@@ -1,4 +1,7 @@
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 
 public class PanelSelect extends JPanel {
@@ -30,8 +33,8 @@ public class PanelSelect extends JPanel {
         backButtonLayout.backButton.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelHome(owner, Driver.width, Driver.height)));
         });
-
         add(backButtonLayout);
+   
     }
 
 }
