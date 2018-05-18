@@ -101,7 +101,7 @@ public class PanelHome extends JPanel {
     }
 
     public void paintComponent(Graphics g) {
-        ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/logoBanner.png");
+        ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/images/logoBanner.png");
         g.setColor(Driver.bgColor);
         g.fillRect(0, 0, width, height);
         g.drawImage(logo.getImage(), 320, 100, 600, 300, null, null);

@@ -4,7 +4,7 @@ public class Simtest
 {
    public static void main(String[] args) throws Exception
    {
-      Simfile smf = new Simfile("colorful.csm");
+      Simfile smf = new Simfile("colorful.csm", 0.0);
       System.out.println(smf.Title());
       System.out.println(smf.Subtitle());
       System.out.println(smf.Artist());

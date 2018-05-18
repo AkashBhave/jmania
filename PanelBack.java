@@ -16,7 +16,7 @@ public class PanelBack extends JPanel {
         backButton.setFont(mainFont);
 
         try {
-            Image img = ImageIO.read(getClass().getResource("assets/backButton.png"));
+            Image img = ImageIO.read(getClass().getResource("assets/images/backButton.png"));
             img = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
             backButton.setIcon(new ImageIcon(img));
         } catch (Exception ex) {

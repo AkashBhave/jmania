@@ -14,7 +14,7 @@ public class Window extends JFrame {
 
     private void createGUI() {
 
-        ImageIcon logo = new ImageIcon(System.getProperty("user.dir") + "/assets/logoSquare.png");
+        ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/images/logoSquare.png");
         setIconImage(logo.getImage());
 
         setPreferredSize(new Dimension(1280, 720));

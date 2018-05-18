@@ -35,9 +35,6 @@ public class PanelSelect extends JPanel {
         });
 
         add(backButtonLayout);
-
-
-
         int backMap = JComponent.WHEN_IN_FOCUSED_WINDOW;
         InputMap imap = this.getInputMap(backMap);
         KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -45,6 +42,11 @@ public class PanelSelect extends JPanel {
 
         ActionMap amap = this.getActionMap();
         amap.put("return", new BackAction() );
+
+
+        DefaultListModel<String> songs = new DefaultListModel<>();
+        JList songList = new JList();
+
 
         owner.requestFocus();
     }
