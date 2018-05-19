@@ -9,7 +9,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     private int[] y = new int[1000];
     private int velY = 2;
     private Window owner;
-    private String arrowPath = Driver.projectPath + "/assets/";
+    private String arrowPath = Driver.projectPath + "/assets/images/";
     private Timer tm = new Timer(1, this);
     private int left = 0;
     private int down = 1;
@@ -88,7 +88,6 @@ public class PanelPlay extends JPanel implements ActionListener {
             }
             pressed = false;
         }
-        System.out.println(String.valueOf(y[nextArrow]));
             
         repaint();
     }
