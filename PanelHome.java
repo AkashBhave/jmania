@@ -46,7 +46,7 @@ public class PanelHome extends JPanel {
         play = new JButton("Play");
         play.setFocusPainted(false);
         play.addActionListener(event -> {
-            SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
+            SwingUtilities.invokeLater(() -> owner.showView(new PanelPlay(owner, Driver.width, Driver.height)));
         });
         play.setPreferredSize(buttonDimension);
         play.setFont(buttonFont);
@@ -101,7 +101,7 @@ public class PanelHome extends JPanel {
     }
 
     public void paintComponent(Graphics g) {
-        ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/images/logoBanner.png");
+        ImageIcon logo = new ImageIcon(Driver.projectPath + "/assets/logoBanner.png");
         g.setColor(Driver.bgColor);
         g.fillRect(0, 0, width, height);
         g.drawImage(logo.getImage(), 320, 100, 600, 300, null, null);
