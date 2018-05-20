@@ -27,6 +27,10 @@ public class PanelSelect extends JPanel {
     private JList songList;
     private JPanel songInfoPanel = new JPanel();
 
+    private JButton leftButton;
+    private JButton rightButton;
+    private JButton playButton;
+
     public PanelSelect(Window owner, int width, int height) {
 
         this.width = width;
@@ -58,19 +62,11 @@ public class PanelSelect extends JPanel {
         });
 
         add(backButtonLayout);
-        int backMap = JComponent.WHEN_IN_FOCUSED_WINDOW;
-        InputMap imap = this.getInputMap(backMap);
-        KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        imap.put(escape, "return");
-
-        ActionMap amap = this.getActionMap();
-        amap.put("return", new BackAction() );
 
         initSongs();
 
-
-        JButton leftButton = new JButton();
-        JButton rightButton = new JButton();
+        leftButton = new JButton();
+        rightButton = new JButton();
 
         try {
             Image img = ImageIO.read(getClass().getResource("assets/images/leftButton.png"));
@@ -146,6 +142,26 @@ public class PanelSelect extends JPanel {
 
         add(mainPanel);
 
+        int backMap = JComponent.WHEN_IN_FOCUSED_WINDOW;
+        InputMap imap = this.getInputMap(backMap);
+        KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        KeyStroke leftKey = KeyStroke.getKeyStroke("LEFT");
+        KeyStroke rightKey = KeyStroke.getKeyStroke("RIGHT");
+        KeyStroke spaceKey = KeyStroke.getKeyStroke("SPACE");
+        KeyStroke enterKey = KeyStroke.getKeyStroke("ENTER");
+
+        imap.put(escape, "return");
+        imap.put(leftKey, "left");
+        imap.put(rightKey, "right");
+        imap.put(spaceKey, "play");
+        imap.put(enterKey, "play");
+
+        ActionMap amap = this.getActionMap();
+        amap.put("return", new KeyAction("return"));
+        amap.put("left", new KeyAction("left"));
+        amap.put("right", new KeyAction("right"));
+        amap.put("play", new KeyAction("play"));
+
         owner.requestFocus();
     }
 
@@ -203,7 +219,7 @@ public class PanelSelect extends JPanel {
         Image songCoverImage = ImageIO.read(songCoverFile);
         songCoverImage = songCoverImage.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 
-        JButton playButton = new JButton("PLAY");
+        playButton = new JButton("PLAY");
         playButton.setPreferredSize(new Dimension(140, 45));
         playButton.setFont(Driver.font);
         playButton.addActionListener(new ActionListener() {
@@ -234,10 +250,32 @@ public class PanelSelect extends JPanel {
     }
 
     @SuppressWarnings("serial")
-    private class BackAction extends AbstractAction {
-        public void actionPerformed (ActionEvent e) {
-            backButtonLayout.backButton.doClick();
+    private class KeyAction extends AbstractAction {
+
+        private String key;
+
+        public KeyAction (String key) {
+            this.key = key;
         }
+
+        public void actionPerformed (ActionEvent e) {
+            switch (key) {
+                case "return" :
+                    backButtonLayout.backButton.doClick();
+                    break;
+                case "left" :
+                    leftButton.doClick();
+                    break;
+                case "right" :
+                    rightButton.doClick();
+                    break;
+                case "play" :
+                    playButton.doClick();
+                    break;
+            }
+            
+        }
+
     }
 
 

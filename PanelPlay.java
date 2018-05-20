@@ -8,10 +8,10 @@ public class PanelPlay extends JPanel implements ActionListener {
     private int width, height; 
     private int[] x = new int[1000]; // list of arrow x-coords
     private int[] y = new int[1000]; // list of arrow y-coords
-    private int velY = 3; // speed of each arrow (not completely true, speed is also effected by timer delay)
+    private int velY = 1; // speed of each arrow (not completely true, speed is also effected by timer delay)
     private Window owner; // jframe owner
     private String arrowPath = Driver.projectPath + "/assets/images/"; // sprite path
-    private Timer tm = new Timer(2, this); // animation timer
+    private Timer tm = new Timer(1, this); // animation timer
     
     // some ints to make life easier
     private final int left = 0;
@@ -23,7 +23,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     private int arrowCount = 0; // number of arrows initialized
     private int nextArrow = 1; // the topmost arrow to be destroyed
     private int timeCount; // counter for when to initialize a new arrow
-    private int newArrowTime = 150; // when timecount reaches this (this variable's value * timer's delay = time in ms) initialize a new arrow
+    private int newArrowTime = 225; // when timecount reaches this (this variable's value * timer's delay = time in ms) initialize a new arrow
     private int pressed = 4; // set to the value of the arrow key that is pressed, used to check which arrow should be destroyed
     private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight; // default arrow sprites
     private ImageIcon active[] = new ImageIcon[1000]; // list of all the arrows
