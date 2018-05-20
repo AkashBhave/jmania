@@ -199,26 +199,35 @@ public class PanelSelect extends JPanel {
             String s = File.separator;
             songCoverFile = new File(Driver.projectPath+"/assets/images/genericCover.jpg");
         }
-        System.out.println(songCoverFile.getAbsolutePath());
 
         Image songCoverImage = ImageIO.read(songCoverFile);
         songCoverImage = songCoverImage.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+
+        JButton playButton = new JButton("PLAY");
+        playButton.setPreferredSize(new Dimension(140, 45));
+        playButton.setFont(Driver.font);
+        playButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> owner.showView(new PanelPlay(owner, Driver.width, Driver.height, currentSong)));
+            }
+        });
 
         JLabel songCover = new JLabel(new ImageIcon(songCoverImage));
         String songTitle = "TITLE: " + currentSong.Title();
         String songArtist = "ARTIST: " + currentSong.Artist();
         String songYear = "YEAR: " + currentSong.Year();
         String songGenre = "GENRE: " + currentSong.Genre();
-        String songBPM = "BPM: " + (int)currentSong.BPM()[0][1];
+        String songBPM = "BPM: " + (int) currentSong.BPM()[0][1];
 
         songInfoPanel.add(songCover);
-        songInfoPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+        songInfoPanel.add(Box.createRigidArea(new Dimension(0, 30)));
         songInfoPanel.add(new JLabel(songTitle));
         songInfoPanel.add(new JLabel(songArtist));
         songInfoPanel.add(new JLabel(songYear));
         songInfoPanel.add(new JLabel(songGenre));
         songInfoPanel.add(new JLabel(songBPM));
-
+        songInfoPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+        songInfoPanel.add(playButton);
 
         songInfoPanel.revalidate();
         songInfoPanel.repaint();

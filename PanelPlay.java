@@ -28,7 +28,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight; // default arrow sprites
     private ImageIcon active[] = new ImageIcon[1000]; // list of all the arrows
     
-    public PanelPlay (Window owner, int width, int height) {
+    public PanelPlay (Window owner, int width, int height, Simfile simfile) {
         this.owner = owner;
         this.width = width;
         this.height = height;
