@@ -79,7 +79,7 @@ public class Simfile
       }
       return "none";
    }
-         
+
    public String Artist()
    {
       for (int i = 0; i < sim.length; i++)
@@ -91,6 +91,30 @@ public class Simfile
       }
       return "none";
    }
+
+    public String Genre()
+    {
+        for (int i = 0; i < sim.length; i++)
+        {
+            if (sim[i].contains("#GENRE:"))
+            {
+                return sim[i].replaceAll("#GENRE:","").replaceAll("\n","").replaceAll(";","");
+            }
+        }
+        return "none";
+    }
+
+    public int Year()
+    {
+        for (int i = 0; i < sim.length; i++)
+        {
+            if (sim[i].contains("#YEAR:"))
+            {
+                return Integer.parseInt(sim[i].replaceAll("#YEAR:","").replaceAll("\n","").replaceAll(";",""));
+            }
+        }
+        return 0;
+    }
                          
    public String AudioFile()
    {

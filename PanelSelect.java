@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class PanelSelect extends JPanel {
@@ -20,7 +21,7 @@ public class PanelSelect extends JPanel {
     private DefaultListModel<String> songs = new DefaultListModel<>();
     private String[] songArray;
 
-    private JList<String> songList;
+    private JList songList;
     private JPanel songInfoPanel = new JPanel();
 
     public PanelSelect(Window owner, int width, int height) {
@@ -97,7 +98,11 @@ public class PanelSelect extends JPanel {
         mainPanel.setPreferredSize(new Dimension(1280, 600));
         songList = new JList(songs);
         songList.setPreferredSize(new Dimension(200, 600));
-        setSongInfoPanel(songArray[0]);
+        try {
+            setSongInfoPanel(songArray[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         songList.setSelectedIndex(0);
 
 
@@ -113,7 +118,11 @@ public class PanelSelect extends JPanel {
                 if (!event.getValueIsAdjusting()){
                     JList source = (JList)event.getSource();
                     int selectedIndex = source.getSelectedIndex();
-                    setSongInfoPanel(songArray[selectedIndex]);
+                    try {
+                        setSongInfoPanel(songArray[selectedIndex]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -144,7 +153,7 @@ public class PanelSelect extends JPanel {
 
         for(int i = 0; i < songFiles.length; i++) {
             songs.addElement(songFiles[i].getName().replaceAll("_", " "));
-            songArray[i] = songFiles[i].getName() + ".csm";
+            songArray[i] = songFiles[i].getAbsolutePath() + File.separator + songFiles[i].getName() + ".csm";
         }
     }
 
@@ -160,11 +169,10 @@ public class PanelSelect extends JPanel {
         songList.setSelectedIndex(newIndex);
     }
 
-    private void setSongInfoPanel(String filename) {
+    private void setSongInfoPanel(String filename) throws Exception {
         System.out.println(filename);
         songInfoPanel.removeAll();
-        JLabel songTitle = new JLabel(filename);
-        songInfoPanel.add(songTitle);
+
         songInfoPanel.revalidate();
         songInfoPanel.repaint();
     }
