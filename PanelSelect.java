@@ -1,7 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
@@ -16,6 +19,9 @@ public class PanelSelect extends JPanel {
 
     private DefaultListModel<String> songs = new DefaultListModel<>();
     private String[] songArray;
+
+    private JList<String> songList;
+    private JPanel songInfoPanel = new JPanel();
 
     public PanelSelect(Window owner, int width, int height) {
 
@@ -70,31 +76,54 @@ public class PanelSelect extends JPanel {
         }
 
         leftButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(leftButton);
-        mainPanel.add(Box.createVerticalGlue());
+        mainPanel.add(Box.createHorizontalGlue());
 
 
 
-        JPanel songInfoPanel = new JPanel();
+        songInfoPanel = new JPanel();
         songInfoPanel.setLayout(new BoxLayout(songInfoPanel, BoxLayout.Y_AXIS));
-        songInfoPanel.setMinimumSize(new Dimension(500, 600));
-        JLabel songTitle = new JLabel("SONG");
-        songInfoPanel.add(songTitle);
-
+        songInfoPanel.setPreferredSize(new Dimension(500, 600));
 
 
         mainPanel.add(songInfoPanel);
+        mainPanel.add(Box.createHorizontalGlue());
 
         leftButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(rightButton);
-        mainPanel.add(Box.createVerticalGlue());
+        mainPanel.add(Box.createHorizontalGlue());
 
 
         mainPanel.setPreferredSize(new Dimension(1280, 600));
-        JList songList = new JList(songs);
-        songList.setPreferredSize(new Dimension(100, 600));
+        songList = new JList(songs);
+        songList.setPreferredSize(new Dimension(200, 600));
+        setSongInfoPanel(songArray[0]);
+        songList.setSelectedIndex(0);
+
+
+        // Action listeners
+        leftButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                changeSongListener(-1);
+            }
+        });
+
+        songList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()){
+                    JList source = (JList)event.getSource();
+                    int selectedIndex = source.getSelectedIndex();
+                    setSongInfoPanel(songArray[selectedIndex]);
+                }
+            }
+        });
+
+        rightButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                changeSongListener(1);
+            }
+        } );
+
         mainPanel.add(songList);
 
         add(mainPanel);
@@ -115,8 +144,29 @@ public class PanelSelect extends JPanel {
 
         for(int i = 0; i < songFiles.length; i++) {
             songs.addElement(songFiles[i].getName().replaceAll("_", " "));
-            songArray[i] = songFiles[i].getName();
+            songArray[i] = songFiles[i].getName() + ".csm";
         }
+    }
+
+    private void changeSongListener(int value) {
+        int currentIndex = songList.getSelectedIndex();
+        int newIndex = currentIndex + value;
+        if(newIndex < 0) {
+            newIndex = songArray.length + value;
+        } else if(newIndex >= songArray.length) {
+            newIndex = newIndex - songArray.length;
+        }
+
+        songList.setSelectedIndex(newIndex);
+    }
+
+    private void setSongInfoPanel(String filename) {
+        System.out.println(filename);
+        songInfoPanel.removeAll();
+        JLabel songTitle = new JLabel(filename);
+        songInfoPanel.add(songTitle);
+        songInfoPanel.revalidate();
+        songInfoPanel.repaint();
     }
 
     @SuppressWarnings("serial")
