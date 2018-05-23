@@ -62,7 +62,7 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     public Simfile smf;
     
-    List<List<String>> timestamp = smf.NotesTime();
+    List<List<String>> timestamp;
     public int noteindex = 0;
     public File file;
     public Clip music;
@@ -99,7 +99,8 @@ public class PanelPlay extends JPanel implements ActionListener {
         
         // Catch the error thrown by PanelPlay
         try {
-            smf = new Simfile("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.csm", 0.0); 
+            smf = new Simfile("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.csm", 0.0);
+            timestamp = smf.NotesTime();
         } catch (Exception f) {
             f.printStackTrace();
         }
