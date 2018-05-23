@@ -39,6 +39,8 @@ public class PanelPlay extends JPanel implements ActionListener {
     private Window owner; // jframe owner
     private String arrowPath = Driver.projectPath + "/assets/images/"; // sprite path
     private Timer tm = new Timer(1, this); // animation timer
+
+    public List<Integer> scores = new ArrayList<Integer>();
     
     // some ints to make life easier
     private final String left = "1000";
@@ -166,6 +168,7 @@ public class PanelPlay extends JPanel implements ActionListener {
             y[start] -= velY;
             if (y[start] <= -80 && active[start] != null) {
                 active[start] = null;
+                nextArrow ++;
                 System.out.println("rekt");
             }
         }   
@@ -183,26 +186,50 @@ public class PanelPlay extends JPanel implements ActionListener {
 
                 case left :
                     if (active[nextArrow].getDescription() == "left") {
-                        active[nextArrow] = null;
-                        nextArrow ++;
+                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        System.out.println(this.calcScore());
+                        System.out.println(this.calcAccuracy());
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow ++;
+                        }
                     } 
                     break;
                 case down :
                     if (active[nextArrow].getDescription() == "down") {
-                        active[nextArrow] = null;
-                        nextArrow ++;
+                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        System.out.println(this.calcScore());
+                        System.out.println(this.calcAccuracy());
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow ++;
+                        }
                     } 
                     break;
                 case up :
                     if (active[nextArrow].getDescription() == "up") {
-                        active[nextArrow] = null;
-                        nextArrow ++;
+                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        System.out.println(this.calcScore());
+                        System.out.println(this.calcAccuracy());
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow ++;
+                        }
                     } 
                     break;
                 case right :
                     if (active[nextArrow].getDescription() == "right") {
-                        active[nextArrow] = null;
-                        nextArrow ++;
+                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        System.out.println(this.calcScore());
+                        System.out.println(this.calcAccuracy());
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow ++;
+                        }
                     } 
                     break;
                 case notPressed :
@@ -229,7 +256,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         double micro = (double)music.getMicrosecondPosition();
         double second = micro/1000000;
         //label1.setText(Double.toString(micro));
-        if (second > Double.parseDouble(timestamp.get(noteindex).get(0))-0.7)
+        if (second > Double.parseDouble(timestamp.get(noteindex).get(0))-1.0)
         {
             loadArrow(timestamp.get(noteindex).get(1));
             y[noteindex] = 800;
@@ -310,6 +337,54 @@ public class PanelPlay extends JPanel implements ActionListener {
             break;
 
         }
+    }
+
+    public int Judgement(Simfile sim, int notenum, double keypos)
+    {
+        List<List<String>> timestamps = sim.NotesTime();
+        double diff = Math.abs((keypos/1000000.0) - Double.parseDouble(timestamps.get(notenum).get(0)));
+
+        if (diff <= 0.05) // perfect
+        {
+            System.out.println("perfect");
+            return 3;
+        }
+        else if (diff <= 0.125) // great
+        {
+            System.out.println("great");
+            return 2;
+        }
+        else if (diff <= 0.25) // good
+        {
+            System.out.println("good");
+            return 1;
+        }
+        else // miss
+        {
+            System.out.println("miss");
+            return 0;
+        }
+    }
+
+    public int calcScore()
+    {
+        int totalscore = 0;
+        for (Integer s:scores)
+            totalscore += s;
+      
+        return totalscore;
+    }
+
+   public double calcAccuracy()
+    {
+        int totalscore = calcScore();
+
+        return (double)totalscore / ((double)this.scores.size()*3.0);
+    }
+
+   public void addNote(int score)
+    {
+       scores.add(score);
     }
 
 }
