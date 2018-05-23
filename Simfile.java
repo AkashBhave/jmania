@@ -189,6 +189,17 @@ public class Simfile
       }
       return note;
    }
+
+   public int NoteCount()
+   {
+      int count = 0;
+      for (List<String> sub : this.Notes())
+      {
+         count += sub.size();
+      }
+      
+      return count;
+   }
    
    public List<List<String>> NotesTime()
    {
