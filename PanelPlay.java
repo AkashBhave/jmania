@@ -60,7 +60,8 @@ public class PanelPlay extends JPanel implements ActionListener {
     private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight; // default arrow sprites
     private ImageIcon active[] = new ImageIcon[1000]; // list of all the arrows
 
-    public Simfile smf = new Simfile("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.csm", 0.0);
+    public Simfile smf;
+    
     List<List<String>> timestamp = smf.NotesTime();
     public int noteindex = 0;
     public File file;
@@ -72,13 +73,15 @@ public class PanelPlay extends JPanel implements ActionListener {
         return 1;
     }
     
-    public PanelPlay (Window owner, int width, int height, Simfile simfile) throws Exception {
+    public PanelPlay (Window owner, int width, int height, Simfile simfile) {
+        // Catch all other exceptions
         try { 
             this.file = new File("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.wav");
             if (file.exists()) {
                 AudioInputStream stream = AudioSystem.getAudioInputStream(file);
                 this.music = AudioSystem.getClip();
                 music.open(stream);
+                
             } 
         }
         catch (IOException e)
@@ -92,6 +95,13 @@ public class PanelPlay extends JPanel implements ActionListener {
         catch (UnsupportedAudioFileException e)
         {
             throw new RuntimeException("This type of audio file is unsupported. Only uncompressed formats are supported.");
+        }
+        
+        // Catch the error thrown by PanelPlay
+        try {
+            smf = new Simfile("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.csm", 0.0); 
+        } catch (Exception f) {
+            f.printStackTrace();
         }
 
         this.owner = owner;
