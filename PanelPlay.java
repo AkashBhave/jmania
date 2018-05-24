@@ -169,7 +169,6 @@ public class PanelPlay extends JPanel implements ActionListener {
             if (y[start] <= -80 && active[start] != null) {
                 active[start] = null;
                 nextArrow ++;
-                System.out.println("rekt");
             }
         }   
 
@@ -186,7 +185,7 @@ public class PanelPlay extends JPanel implements ActionListener {
 
                 case left :
                     if (active[nextArrow].getDescription() == "left") {
-                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
                         System.out.println(this.calcScore());
                         System.out.println(this.calcAccuracy());
                         if (judge > 0) {
@@ -198,7 +197,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                     break;
                 case down :
                     if (active[nextArrow].getDescription() == "down") {
-                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
                         System.out.println(this.calcScore());
                         System.out.println(this.calcAccuracy());
                         if (judge > 0) {
@@ -210,7 +209,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                     break;
                 case up :
                     if (active[nextArrow].getDescription() == "up") {
-                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
                         System.out.println(this.calcScore());
                         System.out.println(this.calcAccuracy());
                         if (judge > 0) {
@@ -222,7 +221,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                     break;
                 case right :
                     if (active[nextArrow].getDescription() == "right") {
-                        int judge = this.Judgement(smf, nextArrow, music.getMicrosecondPosition());
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
                         System.out.println(this.calcScore());
                         System.out.println(this.calcAccuracy());
                         if (judge > 0) {
@@ -339,22 +338,21 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
     }
 
-    public int Judgement(Simfile sim, int notenum, double keypos)
+    public int Judgement(Simfile sim, int notenum, int y)
     {
-        List<List<String>> timestamps = sim.NotesTime();
-        double diff = Math.abs((keypos/1000000.0) - Double.parseDouble(timestamps.get(notenum).get(0)));
+        int diff = Math.abs(y - 80);
 
-        if (diff <= 0.05) // perfect
+        if (diff <= 20) // perfect
         {
             System.out.println("perfect");
             return 3;
         }
-        else if (diff <= 0.125) // great
+        else if (diff <= 40) // great
         {
             System.out.println("great");
             return 2;
         }
-        else if (diff <= 0.25) // good
+        else if (diff <= 60) // good
         {
             System.out.println("good");
             return 1;
