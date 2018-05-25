@@ -122,10 +122,11 @@ public class Simfile
       {
          if (sim[i].contains("#MUSIC:"))
          {
-            return sim[i].replaceAll("#MUSIC:","").replaceAll("\n","").replaceAll(";","");
+            String temp = sim[i].replaceAll("#MUSIC:","").replaceAll("\n","").replaceAll(";","");
+            return ("assets/songs/" + (temp.substring(0, temp.length() - 4)) + "/" + temp);
          }
       }
-      return "none";
+      return "yeet";
    }
             
    public double[][] BPM()

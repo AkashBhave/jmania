@@ -1,3 +1,4 @@
+// blah blah blah imports
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -12,8 +13,9 @@ import java.util.Locale;
 import javax.sound.sampled.*;
 import javax.swing.*;
 
-@SuppressWarnings("serial")
+@SuppressWarnings("serial") // kill VSCode errors (does nothing in jGRASP)
 
+// class to begin song playback
 class RunAudio implements Runnable 
 {
    private Clip music;
@@ -31,48 +33,48 @@ class RunAudio implements Runnable
 
 public class PanelPlay extends JPanel implements ActionListener {
 
-    private int arraySize = 1000;
+    private int arraySize = 1000; // max number of arrows
     private int width, height; 
-    private int[] x = new int[1000]; // list of arrow x-coords
-    private int[] y = new int[1000]; // list of arrow y-coords
+    private int[] x = new int[arraySize]; // list of arrow x-coords
+    private int[] y = new int[arraySize]; // list of arrow y-coords
     private int velY = 1; // speed of each arrow (not completely true, speed is also effected by timer delay)
     private Window owner; // jframe owner
     private String arrowPath = Driver.projectPath + "/assets/images/"; // sprite path
     private Timer tm = new Timer(1, this); // animation timer
 
-    public List<Integer> scores = new ArrayList<Integer>();
+    public List<Integer> scores = new ArrayList<Integer>(); // list of scores
     
-    // some ints to make life easier
+    // variable names, interpretation of .csm notes
     private final String left = "1000";
     private final String down = "0100";
     private final String up = "0010";
     private final String right = "0001";
     private final String notPressed = "0000";
 
+    // inactive sprites, used to switch when key pressed
     private String leftDefault = "inactiveLeft.png";
     private String rightDefault = "inactiveRight.png";
     private String downDefault = "inactiveDown.png";
     private String upDefault = "inactiveUp.png";
 
-    private long temptime;
+    
+    private long temptime; // basically a stopwatch placeholder, used to collaborate with swing's 60 fps cap
+    private long milltime = System.currentTimeMillis(); // actual stopwatch
+    private boolean songstarted = false; // used to only start song once
 
-    private long milltime = System.currentTimeMillis();;
-    private boolean songstarted = false;
-
-    private int arrowCount = 0; // number of arrows initialized
     private int nextArrow; // the topmost arrow to be destroyed
     private int timeCount; // counter for when to initialize a new arrow
     private int newArrowTime = 225; // when timecount reaches this (this variable's value * timer's delay = time in ms) initialize a new arrow
     private String pressed = notPressed; // set to the value of the arrow key that is pressed, used to check which arrow should be destroyed
     private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight; // default arrow sprites
-    private ImageIcon active[] = new ImageIcon[1000]; // list of all the arrows
+    private ImageIcon active[] = new ImageIcon[arraySize]; // list of all the arrows
 
-    public Simfile smf;
+    public Simfile smf; // .csm file to read
     
-    List<List<String>> timestamp;
-    public int noteindex = 0;
-    public File file;
-    public Clip music;
+    List<List<String>> timestamp; // list of timestamps to make notes appear at the right time
+    public int noteindex = 0; // number of arrows initialized
+    public File file; // .wav audio file for song
+    public Clip music; // actual song clip
 
     public int addnoteindex() // literally just for the actionlistener
     {
@@ -83,7 +85,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     public PanelPlay (Window owner, int width, int height, Simfile simfile) {
         // Catch all other exceptions
         try { 
-            this.file = new File("Dynamite.wav");
+            this.file = new File(simfile.AudioFile()); 
             if (file.exists()) {
                 AudioInputStream stream = AudioSystem.getAudioInputStream(file);
                 this.music = AudioSystem.getClip();
@@ -91,6 +93,10 @@ public class PanelPlay extends JPanel implements ActionListener {
                 
             } 
         }
+
+        /******************************************
+        These are all defined in the Simfile class
+        ******************************************/
         catch (IOException e)
         {
             throw new RuntimeException("There was an I/O error reading the audio file.");
@@ -106,7 +112,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         
         // Catch the error thrown by PanelPlay
         try {
-            smf = new Simfile("Dynamite.csm", 0.0);
+            smf = simfile;
             timestamp = smf.NotesTime();
         } catch (Exception f) {
             f.printStackTrace();
@@ -219,15 +225,8 @@ public class PanelPlay extends JPanel implements ActionListener {
     // called every time the timer runs
     public void actionPerformed (ActionEvent e) {
 
-        // if (value of newArrowTime * value of timer's delay) ms has passes, initialize a new arrow randomly
         timeCount++;
-        /*if (timeCount % newArrowTime == 0) {
-            int random = (int)(Math.random() * 4);
-            arrowCount += 1;
-            loadArrow(random);
-            y[arrowCount] = 800;
-        }*/
-
+    
         // animate all existing arrows
         for (int start = noteindex; start > 0; start --) {
             y[start] -= velY;
