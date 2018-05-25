@@ -49,6 +49,11 @@ public class PanelPlay extends JPanel implements ActionListener {
     private final String right = "0001";
     private final String notPressed = "0000";
 
+    private String leftDefault = "inactiveLeft.png";
+    private String rightDefault = "inactiveRight.png";
+    private String downDefault = "inactiveDown.png";
+    private String upDefault = "inactiveUp.png";
+
     private long temptime;
 
     private long milltime = System.currentTimeMillis();;
@@ -78,7 +83,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     public PanelPlay (Window owner, int width, int height, Simfile simfile) {
         // Catch all other exceptions
         try { 
-            this.file = new File("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.wav");
+            this.file = new File("Dynamite.wav");
             if (file.exists()) {
                 AudioInputStream stream = AudioSystem.getAudioInputStream(file);
                 this.music = AudioSystem.getClip();
@@ -101,7 +106,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         
         // Catch the error thrown by PanelPlay
         try {
-            smf = new Simfile("assets/songs/Never_Gonna_Give_You_Up/Never_Gonna_Give_You_Up.csm", 0.0);
+            smf = new Simfile("Dynamite.csm", 0.0);
             timestamp = smf.NotesTime();
         } catch (Exception f) {
             f.printStackTrace();
@@ -120,16 +125,31 @@ public class PanelPlay extends JPanel implements ActionListener {
         KeyStroke rightKey = KeyStroke.getKeyStroke("RIGHT");
         KeyStroke upKey = KeyStroke.getKeyStroke("UP");
         KeyStroke downKey = KeyStroke.getKeyStroke("DOWN");
+
+        KeyStroke releaseLeft = KeyStroke.getKeyStroke("released LEFT");
+        KeyStroke releaseRight = KeyStroke.getKeyStroke("released RIGHT");
+        KeyStroke releaseUp = KeyStroke.getKeyStroke("released UP");
+        KeyStroke releaseDown = KeyStroke.getKeyStroke("released DOWN");
         imap.put(leftKey, "loadLeft");
         imap.put(rightKey, "loadRight");
         imap.put(downKey, "loadDown");
         imap.put(upKey, "loadUp");
+
+        imap.put(releaseLeft, "releaseLeft");
+        imap.put(releaseRight, "releaseRight");
+        imap.put(releaseUp, "releaseUp");
+        imap.put(releaseDown, "releaseDown");
         
         ActionMap amap = this.getActionMap();
         amap.put("loadLeft", new ArrowAction(left));
         amap.put("loadRight", new ArrowAction(right));
         amap.put("loadDown", new ArrowAction(down));
         amap.put("loadUp", new ArrowAction(up));
+
+        amap.put("releaseLeft", new ReleaseAction(left));
+        amap.put("releaseRight", new ReleaseAction(right));
+        amap.put("releaseUp", new ReleaseAction(up));
+        amap.put("releaseDown", new ReleaseAction(down));
         
         
         owner.requestFocus();
@@ -146,8 +166,53 @@ public class PanelPlay extends JPanel implements ActionListener {
         
         // sends a value to pressed based on which key was pressed
         public void actionPerformed (ActionEvent e) {
-            pressed = direction;
 
+            switch (direction) {
+
+                case left :
+                    leftDefault = "pressedLeft.png";
+                    break;
+                case right :
+                    rightDefault = "pressedRight.png";
+                    break;
+                case down :
+                    downDefault = "pressedDown.png";
+                    break;
+                case up :
+                    upDefault = "pressedUp.png";
+                    break;
+                
+            }
+
+            pressed = direction;
+        }
+    }
+
+    private class ReleaseAction extends AbstractAction {
+
+        private String direction;
+
+        public ReleaseAction (String direction) {
+            this.direction = direction;
+        }
+
+        public void actionPerformed (ActionEvent e) {
+            switch (direction) {
+
+                case left :
+                    leftDefault = "inactiveLeft.png";
+                    break;
+                case right :
+                    rightDefault = "inactiveRight.png";
+                    break;
+                case down :
+                    downDefault = "inactiveDown.png";
+                    break;
+                case up :
+                    upDefault = "inactiveup.png";
+                    break;
+                
+            }
         }
     }
     
@@ -167,6 +232,10 @@ public class PanelPlay extends JPanel implements ActionListener {
         for (int start = noteindex; start > 0; start --) {
             y[start] -= velY;
             if (y[start] <= -80 && active[start] != null) {
+                int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
+                System.out.println(this.calcScore());
+                System.out.println(this.calcAccuracy());
+                this.addNote(judge);
                 active[start] = null;
                 nextArrow ++;
             }
@@ -180,7 +249,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
 
         // if an arrow key is pressed and the topmost arrow is the corresponding arrow, destroy it.
-        if (y[nextArrow] < 500 && active[nextArrow] != null) {
+        if (y[nextArrow] < 720 && active[nextArrow] != null) {
             switch (pressed) {
 
                 case left :
@@ -238,12 +307,12 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
         temptime = System.currentTimeMillis();
 
-
-
         if (temptime-milltime >= 16) {
             repaint();
             milltime = temptime;
         }
+
+        
 
          // redraw the canvas after all is said and done
         
@@ -292,10 +361,10 @@ public class PanelPlay extends JPanel implements ActionListener {
     // default arrows
     private void loadStaticSprites (Graphics g) {
        
-        inactiveDown = new ImageIcon(arrowPath + "inactiveDown.png");
-        inactiveLeft = new ImageIcon(arrowPath + "inactiveLeft.png");
-        inactiveUp = new ImageIcon(arrowPath + "inactiveUp.png");
-        inactiveRight = new ImageIcon(arrowPath + "inactiveRight.png");
+        inactiveDown = new ImageIcon(arrowPath + downDefault);
+        inactiveLeft = new ImageIcon(arrowPath + leftDefault);
+        inactiveUp = new ImageIcon(arrowPath + upDefault);
+        inactiveRight = new ImageIcon(arrowPath + rightDefault);
         
         g.drawImage(inactiveLeft.getImage(), 425, 100, null, null);
         g.drawImage(inactiveDown.getImage(), 525, 100, null, null);
@@ -342,18 +411,18 @@ public class PanelPlay extends JPanel implements ActionListener {
     {
         int diff = Math.abs(y - 80);
 
-        if (diff <= 20) // perfect
+        if (diff <= 30) // perfect
         {
             System.out.println("perfect");
             return 3;
         }
-        else if (diff <= 40) // great
+        else if (diff <= 60) // great
         {
             System.out.println("great");
             return 2;
         }
-        else if (diff <= 60) // good
-        {
+        else if (diff <= 90) // good
+            {
             System.out.println("good");
             return 1;
         }
