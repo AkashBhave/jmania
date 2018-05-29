@@ -232,8 +232,7 @@ public class PanelPlay extends JPanel implements ActionListener {
             y[start] -= velY;
             if (y[start] <= -80 && active[start] != null) {
                 int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                System.out.println(this.calcScore());
-                System.out.println(this.calcAccuracy());
+                displayResults(judge);
                 this.addNote(judge);
                 active[start] = null;
                 nextArrow ++;
@@ -254,8 +253,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case left :
                     if (active[nextArrow].getDescription() == "left") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        System.out.println(this.calcScore());
-                        System.out.println(this.calcAccuracy());
+                        displayResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -266,8 +264,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case down :
                     if (active[nextArrow].getDescription() == "down") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        System.out.println(this.calcScore());
-                        System.out.println(this.calcAccuracy());
+                        displayResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -278,8 +275,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case up :
                     if (active[nextArrow].getDescription() == "up") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        System.out.println(this.calcScore());
-                        System.out.println(this.calcAccuracy());
+                        displayResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -290,8 +286,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case right :
                     if (active[nextArrow].getDescription() == "right") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        System.out.println(this.calcScore());
-                        System.out.println(this.calcAccuracy());
+                        displayResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -412,22 +407,18 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         if (diff <= 30) // perfect
         {
-            System.out.println("perfect");
             return 3;
         }
         else if (diff <= 60) // great
         {
-            System.out.println("great");
             return 2;
         }
         else if (diff <= 90) // good
-            {
-            System.out.println("good");
+        {
             return 1;
         }
         else // miss
         {
-            System.out.println("miss");
             return 0;
         }
     }
@@ -452,5 +443,13 @@ public class PanelPlay extends JPanel implements ActionListener {
     {
        scores.add(score);
     }
+    
+   public void displayResults(int judge) {
+       System.out.println(judge);
+       System.out.println(this.calcScore());
+       System.out.println(this.calcAccuracy());
+
+   }
+   
 
 }
