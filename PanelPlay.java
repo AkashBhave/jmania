@@ -85,18 +85,27 @@ public class PanelPlay extends JPanel implements ActionListener {
     
     public PanelPlay (Window owner, int width, int height, Simfile simfile) {
         // Add back button to panel
-        PanelBack backButtonLayout = new PanelBack();
-        backButtonLayout.backButton.addActionListener(event -> {
+        PanelBack topLayout = new PanelBack();
+        topLayout.removeAll();
+        topLayout.setLayout(new BoxLayout(topLayout, BoxLayout.X_AXIS));
+        topLayout.setBackground(new Color(0,0,0,0));
+        topLayout.add(topLayout.backButton);
+        topLayout.add(Box.createRigidArea(new Dimension(1000, 50)));
+        topLayout.backButton.addActionListener(event -> {
+            // Stops reading the simfile
             tm.stop();
             audioThread.interrupt();
+            // Stops playing the song
             songstarted = false;
             music.stop();
             music.flush();
             SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
         });
-        backButtonLayout.setVisible(true);
-
-        add(backButtonLayout);
+        topLayout.backButton.setText(" Exit");
+        topLayout.setVisible(true);
+        JLabel tLabel = new JLabel("TEST");
+        add(topLayout);
+        add(tLabel);
 
         // Catch all other exceptions
         try { 
