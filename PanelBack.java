@@ -7,13 +7,11 @@ public class PanelBack extends JPanel {
     public JButton backButton;
 
     public PanelBack() {
-        Font mainFont = new Font(Driver.fontFamily, Font.PLAIN, 20);
-
         setBackground(Driver.bgColor);
         setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
 
         backButton = new JButton(" Go Back");
-        backButton.setFont(mainFont);
+        backButton.setFont(Driver.fontRegular.deriveFont(20f));
 
         try {
             Image img = ImageIO.read(getClass().getResource("assets/images/backButton.png"));

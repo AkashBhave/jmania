@@ -48,13 +48,9 @@ public class PanelSelect extends JPanel {
     private void createGUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        Font mainFont = new Font(Driver.fontFamily, Font.PLAIN, 20);
-
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         mainPanel.setBackground(Driver.bgColor);
-        mainPanel.setFont(mainFont);
-
 
         backButtonLayout = new PanelBack();
         backButtonLayout.backButton.addActionListener(event -> {
@@ -88,6 +84,7 @@ public class PanelSelect extends JPanel {
         songInfoPanel.setLayout(new BoxLayout(songInfoPanel, BoxLayout.Y_AXIS));
         songInfoPanel.setPreferredSize(new Dimension(500, 600));
         songInfoPanel.setBackground(Driver.bgColor);
+        songInfoPanel.setFont(Driver.standardFont);
 
 
         mainPanel.add(songInfoPanel);
@@ -108,6 +105,8 @@ public class PanelSelect extends JPanel {
             e.printStackTrace();
         }
         songList.setSelectedIndex(0);
+        songList.setFont(Driver.fontRegular.deriveFont(16f));
+        songList.setBackground(Driver.bgColor);
 
 
         // Action listeners
@@ -220,8 +219,8 @@ public class PanelSelect extends JPanel {
         songCoverImage = songCoverImage.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 
         playButton = new JButton("PLAY");
-        playButton.setPreferredSize(new Dimension(140, 45));
-        playButton.setFont(Driver.font);
+        playButton.setPreferredSize(new Dimension(140, 55));
+        playButton.setFont(Driver.fontBold.deriveFont(18f));
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> owner.showView(new PanelPlay(owner, Driver.width, Driver.height, currentSong)));
@@ -235,13 +234,19 @@ public class PanelSelect extends JPanel {
         String songGenre = "GENRE: " + currentSong.Genre();
         String songBPM = "BPM: " + (int) currentSong.BPM()[0][1];
 
+        JLabel songTitleLabel = new JLabel(songTitle); songTitleLabel.setFont(Driver.standardFont);
+        JLabel songArtistLabel = new JLabel(songArtist); songArtistLabel.setFont(Driver.standardFont);
+        JLabel songYearLabel = new JLabel(songYear); songYearLabel.setFont(Driver.standardFont);
+        JLabel songGenreLabel = new JLabel(songGenre); songGenreLabel.setFont(Driver.standardFont);
+        JLabel songBPMLabel = new JLabel(songBPM); songBPMLabel.setFont(Driver.standardFont);
+
         songInfoPanel.add(songCover);
         songInfoPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        songInfoPanel.add(new JLabel(songTitle));
-        songInfoPanel.add(new JLabel(songArtist));
-        songInfoPanel.add(new JLabel(songYear));
-        songInfoPanel.add(new JLabel(songGenre));
-        songInfoPanel.add(new JLabel(songBPM));
+        songInfoPanel.add(songTitleLabel);
+        songInfoPanel.add(songArtistLabel);
+        songInfoPanel.add(songYearLabel);
+        songInfoPanel.add(songGenreLabel);
+        songInfoPanel.add(songBPMLabel);
         songInfoPanel.add(Box.createRigidArea(new Dimension(0, 50)));
         songInfoPanel.add(playButton);
 

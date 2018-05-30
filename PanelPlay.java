@@ -189,7 +189,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         topLayout.backButton.setText(" Exit");
         topLayout.add(Box.createHorizontalGlue());
 
-        judgeLabel.setFont(Driver.font);
+        judgeLabel.setFont(Driver.fontBold.deriveFont(28f));
 
         topLayout.add(judgeLabel);
         topLayout.add(Box.createRigidArea(new Dimension(20, 60)));
@@ -491,19 +491,19 @@ public class PanelPlay extends JPanel implements ActionListener {
         switch (judge) {
         case 3:
             judgeLabel.setText("PERFECT");
-            judgeLabel.setForeground(Color.GREEN);
+            judgeLabel.setForeground(new Color(56,142,60));
             break;
         case 2:
             judgeLabel.setText("GREAT");
-            judgeLabel.setForeground(Color.ORANGE);
+            judgeLabel.setForeground(new Color(245,124,0));
             break;
         case 1:
             judgeLabel.setText("GOOD");
-            judgeLabel.setForeground(Color.YELLOW);
+            judgeLabel.setForeground(new Color(251,192,45));
             break;
         case 0:
             judgeLabel.setText("MISS");
-            judgeLabel.setForeground(Color.RED);
+            judgeLabel.setForeground(new Color(211,47,47));
             break;
 
         }

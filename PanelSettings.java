@@ -48,8 +48,6 @@ public class PanelSettings extends JPanel {
     private void createGUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        Font mainFont = new Font(Driver.fontFamily, Font.PLAIN, 20);
-
         backButtonLayout = new PanelBack();
         backButtonLayout.backButton.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelHome(owner, Driver.width, Driver.height)));
@@ -108,13 +106,13 @@ public class PanelSettings extends JPanel {
             sliders[i].setPaintLabels(true);
             sliders[i].setBackground(Driver.bgColor);
             sliders[i].setPreferredSize(new Dimension(30, 320));
-            sliderLabels[i].setFont(Driver.font);
+            sliderLabels[i].setFont(Driver.standardFont);
         }
 
         JPanel saveButtonPanel = new JPanel(new FlowLayout());
         saveButtonPanel.setBackground(Driver.bgColor);
         JButton saveButton = new JButton("Save");
-        saveButton.setFont(Driver.font);
+        saveButton.setFont(Driver.standardFont);
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         saveButton.setPreferredSize( new Dimension(140, 45) );
         saveButton.addActionListener( new saveProps() );

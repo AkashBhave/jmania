@@ -32,7 +32,7 @@ public class PanelHome extends JPanel {
         add(buttons);
 
         Dimension buttonDimension = new Dimension(140, 45);
-        Font buttonFont = Driver.font;
+        Font buttonFont = Driver.fontBold.deriveFont(18f);
 
         settings = new JButton("Settings");
         settings.setFocusPainted(false);
