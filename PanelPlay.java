@@ -1,4 +1,3 @@
-
 // blah blah blah imports
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial") // kill VSCode errors (does nothing in jGRASP)
 
@@ -79,7 +79,9 @@ public class PanelPlay extends JPanel implements ActionListener {
     public File file; // .wav audio file for song
     public Clip music; // actual song clip
 
-    public JLabel judgeLabel = new JLabel();
+    private JLabel judgeLabel = new JLabel();
+    private JProgressBar progressBar = new JProgressBar(0, 100);
+    private long currentSongLength;
 
     public int addnoteindex() // literally just for the actionlistener
     {
@@ -89,6 +91,7 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     public PanelPlay(Window owner, int width, int height, Simfile simfile) {
         initTopLayout();
+        initProgressBar();
 
         // Catch all other exceptions
         try {
@@ -97,10 +100,9 @@ public class PanelPlay extends JPanel implements ActionListener {
                 AudioInputStream stream = AudioSystem.getAudioInputStream(file);
                 this.music = AudioSystem.getClip();
                 music.open(stream);
-
+                currentSongLength = music.getMicrosecondLength();
             }
         }
-
         /******************************************
          * These are all defined in the Simfile class
          ******************************************/
@@ -195,6 +197,15 @@ public class PanelPlay extends JPanel implements ActionListener {
         topLayout.setVisible(true);
         add(topLayout);
     }
+    private void initProgressBar() {
+        add(Box.createVerticalGlue());
+
+        progressBar.setPreferredSize(new Dimension(this.getWidth(), 20));
+        progressBar.setForeground(new Color(243, 66, 53));
+        progressBar.setBorder(new LineBorder(Color.BLUE));
+        progressBar.setValue(0);
+        add(progressBar);
+    }
 
     // gets called when arrow key is pressed, parameter depends on which arrow key
     private class ArrowAction extends AbstractAction {
@@ -259,6 +270,10 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     // called every time the timer runs
     public void actionPerformed(ActionEvent e) {
+        // Updates the progress bar
+        long currentSongPosition = this.music.getMicrosecondPosition();
+        int songProgress = (int)((float)currentSongPosition/this.currentSongLength*100);
+        progressBar.setValue(songProgress);
 
         timeCount++;
 
@@ -472,6 +487,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     }
 
     public void displayResults(int judge) {
+        // Updates the judgement text
         switch (judge) {
         case 3:
             judgeLabel.setText("PERFECT");
@@ -491,8 +507,9 @@ public class PanelPlay extends JPanel implements ActionListener {
             break;
 
         }
-        System.out.println(this.calcScore());
-        System.out.println(this.calcAccuracy());
+
+        // System.out.println(this.calcScore());
+        // System.out.println(this.calcAccuracy());
     }
 
 }
