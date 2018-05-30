@@ -27,7 +27,7 @@ class RunAudio implements Runnable
    public void run()
    {
       if (!music.isRunning())
-         music.start();
+        music.start();
    }
 }
 
@@ -41,6 +41,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     private Window owner; // jframe owner
     private String arrowPath = Driver.projectPath + "/assets/images/"; // sprite path
     private Timer tm = new Timer(1, this); // animation timer
+    private Thread audioThread;
 
     public List<Integer> scores = new ArrayList<Integer>(); // list of scores
     
@@ -83,6 +84,20 @@ public class PanelPlay extends JPanel implements ActionListener {
     }
     
     public PanelPlay (Window owner, int width, int height, Simfile simfile) {
+        // Add back button to panel
+        PanelBack backButtonLayout = new PanelBack();
+        backButtonLayout.backButton.addActionListener(event -> {
+            tm.stop();
+            audioThread.interrupt();
+            songstarted = false;
+            music.stop();
+            music.flush();
+            SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
+        });
+        backButtonLayout.setVisible(true);
+
+        add(backButtonLayout);
+
         // Catch all other exceptions
         try { 
             this.file = new File(simfile.AudioFile()); 
@@ -311,7 +326,8 @@ public class PanelPlay extends JPanel implements ActionListener {
          // redraw the canvas after all is said and done
         
         if (!songstarted) {
-            new Thread(new RunAudio(music)).start(); 
+            audioThread = new Thread(new RunAudio(music)); 
+            audioThread.start();
             songstarted = true;
         }
 
