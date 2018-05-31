@@ -179,14 +179,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         topLayout.add(Box.createRigidArea(new Dimension(20, 60)));
         topLayout.add(topLayout.backButton);
         topLayout.backButton.addActionListener(event -> {
-            // Stops reading the simfile
-            tm.stop();
-            audioThread.interrupt();
-            // Stops playing the song
-            songstarted = false;
-            music.stop();
-            music.flush();
-            // Sets the window to show PanelSelect
+            endRound();
             SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
         });
         topLayout.backButton.setText(" Exit");
@@ -199,6 +192,17 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         topLayout.setVisible(true);
         add(topLayout);
+    }
+
+    private void endRound() {
+        // Stops reading the simfile
+        tm.stop();
+        audioThread.interrupt();
+        // Stops playing the song
+        songstarted = false;
+        music.stop();
+        music.flush();
+        // Sets the window to show PanelSelect
     }
 
     private void initStatsLayout() {
@@ -308,12 +312,17 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         timeCount++;
 
+        if(noteindex + 1 == this.smf.NoteCount()) {
+            endRound();
+            SwingUtilities.invokeLater(() -> owner.showView(new PanelEnd(owner, Driver.width, Driver.height, this.calcAccuracy(), this.scores)));
+        }
+
         // animate all existing arrows
         for (int start = noteindex; start > 0; start--) {
             y[start] -= velY;
             if (y[start] <= -80 && active[start] != null) {
                 int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                displayResults(judge);
+                updateResults(judge);
                 this.addNote(judge);
                 active[start] = null;
                 nextArrow++;
@@ -335,7 +344,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case left:
                     if (active[nextArrow].getDescription() == "left") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        displayResults(judge);
+                        updateResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -346,7 +355,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case down:
                     if (active[nextArrow].getDescription() == "down") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        displayResults(judge);
+                        updateResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -357,7 +366,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case up:
                     if (active[nextArrow].getDescription() == "up") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        displayResults(judge);
+                        updateResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -368,7 +377,7 @@ public class PanelPlay extends JPanel implements ActionListener {
                 case right:
                     if (active[nextArrow].getDescription() == "right") {
                         int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                        displayResults(judge);
+                        updateResults(judge);
                         if (judge > 0) {
                             active[nextArrow] = null;
                             this.addNote(judge);
@@ -517,7 +526,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         scores.add(score);
     }
 
-    public void displayResults(int judge) {
+    public void updateResults(int judge) {
         // Updates the judgement text
         switch (judge) {
             case 3:

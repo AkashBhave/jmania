@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class PanelEnd extends JPanel {
@@ -14,13 +15,17 @@ public class PanelEnd extends JPanel {
     final private Window owner;
     private int height;
     private int width;
+    private double accuracy;
+    private List<Integer> scores;
     private PanelBack backButtonLayout;
 
-    public PanelEnd(Window owner, int width, int height) {
+    public PanelEnd(Window owner, int width, int height, double accuracy, List<Integer> scores) {
 
         this.width = width;
         this.height = height;
         this.owner = owner;
+        this.accuracy = accuracy;
+        this.scores = scores;
 
         createGUI();
     }
@@ -32,6 +37,7 @@ public class PanelEnd extends JPanel {
 
     private void createGUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        System.out.println(this.accuracy);
 
         backButtonLayout = new PanelBack();
         backButtonLayout.backButton.addActionListener(event -> {
