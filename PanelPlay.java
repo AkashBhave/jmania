@@ -7,9 +7,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @SuppressWarnings("serial")
         // kill VSCode errors (does nothing in jGRASP)
@@ -104,6 +107,8 @@ public class PanelPlay extends JPanel implements ActionListener {
                 AudioInputStream stream = AudioSystem.getAudioInputStream(file);
                 this.music = AudioSystem.getClip();
                 music.open(stream);
+                adjustSongVolume();
+
                 currentSongLength = music.getMicrosecondLength();
             }
         }
@@ -166,6 +171,18 @@ public class PanelPlay extends JPanel implements ActionListener {
         amap.put("releaseDown", new ReleaseAction(down));
 
         owner.requestFocus();
+    }
+
+    private void adjustSongVolume() throws IOException {
+        Properties gameProps = new Properties();
+        gameProps.load(new FileInputStream(Driver.projectPath + "/app.properties"));
+        float songVolume = Float.parseFloat(gameProps.getProperty("songVolume"));
+
+        FloatControl gainControl = (FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN);
+        float clipRange = gainControl.getMaximum() - gainControl.getMinimum();
+        float clipVolStep = clipRange / 100;
+        float finalVolume = gainControl.getMinimum() + (clipVolStep*songVolume);
+        gainControl.setValue(finalVolume);
     }
 
     private void initTopLayout() {
@@ -312,6 +329,7 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         timeCount++;
 
+        // This means that the song has ended
         if(noteindex + 1 == this.smf.NoteCount()) {
             endRound();
             SwingUtilities.invokeLater(() -> owner.showView(new PanelEnd(owner, Driver.width, Driver.height, this.calcAccuracy(), this.scores)));

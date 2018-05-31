@@ -68,12 +68,12 @@ public class PanelSettings extends JPanel {
 
         sliderLabels[0] = new JLabel("Effects Volume");
         c.gridx = 0; c.gridy = 0;
-        controlsPanel.add(sliderLabels[0], c);
+        //controlsPanel.add(sliderLabels[0], c);
         sliders[0] = new JSlider(JSlider.VERTICAL, 0, 100, Integer.parseInt(props.getProperty("effectsVolume")));
         sliders[0].setMajorTickSpacing(10);
         sliders[0].setMinorTickSpacing(1);
         c.gridx = 0; c.gridy = 1;
-        controlsPanel.add(sliders[0], c);
+        //controlsPanel.add(sliders[0], c);
 
         sliderLabels[1] = new JLabel("Song Volume");
         c.gridx = 1; c.gridy = 0;
@@ -86,18 +86,18 @@ public class PanelSettings extends JPanel {
 
         sliderLabels[2] = new JLabel("Margin of Error");
         c.gridx = 2; c.gridy = 0;
-        controlsPanel.add(sliderLabels[2], c);
+        //controlsPanel.add(sliderLabels[2], c);
         sliders[2] = new JSlider(JSlider.VERTICAL, 1, 10, Integer.parseInt(props.getProperty("marginOfError")));
         c.gridx = 2; c.gridy = 1;
-        controlsPanel.add(sliders[2], c);
+        //controlsPanel.add(sliders[2], c);
         sliders[2].setMajorTickSpacing(1);
 
         sliderLabels[3] = new JLabel("Note Speed");
         c.gridx = 3; c.gridy = 0;
-        controlsPanel.add(sliderLabels[3], c);
+        //controlsPanel.add(sliderLabels[3], c);
         sliders[3] = new JSlider(JSlider.VERTICAL, 1, 10, Integer.parseInt(props.getProperty("noteSpeed")));
         c.gridx = 3; c.gridy = 1;
-        controlsPanel.add(sliders[3], c);
+        //controlsPanel.add(sliders[3], c);
         sliders[3].setMajorTickSpacing(1);
 
 
