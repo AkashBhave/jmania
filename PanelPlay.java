@@ -61,6 +61,7 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     private long temptime; // basically a stopwatch placeholder, used to collaborate with swing's 60 fps
     // cap
+    private int progressBarUpdate = 0; // delays the rate at which the progress bar updates
     private long milltime = System.currentTimeMillis(); // actual stopwatch
     private boolean songstarted = false; // used to only start song once
 
@@ -84,6 +85,8 @@ public class PanelPlay extends JPanel implements ActionListener {
     private JLabel judgeLabel = new JLabel();
     private JProgressBar progressBar = new JProgressBar(0, 100);
     private long currentSongLength;
+    private long currentSongPosition;
+    private int songProgress;
     private JPanel statsPanel = new JPanel();
     private JLabel accuracyLabel = new JLabel();
     private JLabel scoreLabel = new JLabel();
@@ -322,11 +325,6 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     // called every time the timer runs
     public void actionPerformed(ActionEvent e) {
-        // Updates the progress bar
-        long currentSongPosition = this.music.getMicrosecondPosition();
-        int songProgress = (int) ((float) currentSongPosition / this.currentSongLength * 100);
-        progressBar.setValue(songProgress);
-
         timeCount++;
 
         // This means that the song has ended
@@ -411,6 +409,15 @@ public class PanelPlay extends JPanel implements ActionListener {
         temptime = System.currentTimeMillis();
 
         if (temptime - milltime >= 16) {
+            if (progressBarUpdate >= 32) { // Runs every ~0.5 seconds
+                // Updates the progress bar 
+                currentSongPosition = this.music.getMicrosecondPosition();
+                songProgress = (int) ((float) currentSongPosition / this.currentSongLength * 100);
+                progressBar.setValue(songProgress);
+                progressBarUpdate = 0;
+            } else {
+                progressBarUpdate++;
+            }
             repaint();
             milltime = temptime;
         }
