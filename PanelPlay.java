@@ -328,7 +328,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         timeCount++;
 
         // This means that the song has ended
-        if(noteindex + 1 == this.smf.NoteCount()) {
+        if(!music.isRunning() && music.getMicrosecondPosition() > 0) {
             endRound();
             SwingUtilities.invokeLater(() -> owner.showView(new PanelEnd(owner, Driver.width, Driver.height, this.calcAccuracy(), this.scores)));
         }
@@ -432,14 +432,16 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         double micro = (double) music.getMicrosecondPosition();
         double second = micro / 1000000;
-        // label1.setText(Double.toString(micro));
-        if (second > Double.parseDouble(timestamp.get(noteindex).get(0)) - 1.0) {
-            loadArrow(timestamp.get(noteindex).get(1));
-            y[noteindex] = 800;
 
-            addnoteindex();
-            // System.out.println(Double.toString(second));
-            // System.out.println(timestamp.get(noteindex).get(0));
+        if (noteindex < smf.NoteCount()) { // so we don't run out of notes
+            if (second > Double.parseDouble(timestamp.get(noteindex).get(0)) - 1.0) {
+                loadArrow(timestamp.get(noteindex).get(1));
+                y[noteindex] = 800;
+
+                addnoteindex();
+                // System.out.println(Double.toString(second));
+                // System.out.println(timestamp.get(noteindex).get(0));
+            }
         }
 
     }
