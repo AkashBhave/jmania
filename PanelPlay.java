@@ -81,11 +81,11 @@ public class PanelPlay extends JPanel implements ActionListener {
     public File file; // .wav audio file for song
     public Clip music; // actual song clip
 
+    private double micro;
 
     private JLabel judgeLabel = new JLabel();
     private JProgressBar progressBar = new JProgressBar(0, 100);
     private long currentSongLength;
-    private long currentSongPosition;
     private int songProgress;
     private JPanel statsPanel = new JPanel();
     private JLabel accuracyLabel = new JLabel();
@@ -411,8 +411,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         if (temptime - milltime >= 16) {
             if (progressBarUpdate >= 32) { // Runs every ~0.5 seconds
                 // Updates the progress bar 
-                currentSongPosition = this.music.getMicrosecondPosition();
-                songProgress = (int) ((float) currentSongPosition / this.currentSongLength * 100);
+                songProgress = (int) (micro / this.currentSongLength * 100);
                 progressBar.setValue(songProgress);
                 progressBarUpdate = 0;
             } else {
@@ -430,7 +429,7 @@ public class PanelPlay extends JPanel implements ActionListener {
             songstarted = true;
         }
 
-        double micro = (double) music.getMicrosecondPosition();
+        micro = (double) music.getMicrosecondPosition();
         double second = micro / 1000000;
 
         if (noteindex < smf.NoteCount()) { // so we don't run out of notes
