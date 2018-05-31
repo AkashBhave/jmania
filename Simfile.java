@@ -1,5 +1,3 @@
-// as of tuesday, this is the most recent version
-
 /**
  * Short for simulation file.
  * Reads and parses .csm files
@@ -16,230 +14,250 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Simfile
-{
+public class Simfile {
 
-   /**
-    * The filename is an argument taken while making a new object.
-    * It can be publically called using Simfile.filename
-    */
-   public String filename;
-   
-   private BufferedReader sf;
-   private List<String> simlist = new ArrayList<String>();
-   private String[] sim; 
-   
-   private String[] bpms;
-   
-   private String line;
-   private String notestr;
-   private List<String> noteslist = new ArrayList<String>();
-   private List<List<String>> note = new ArrayList<List<String>>();
+    public String filename;
 
-   private List<List<String>> note1 = new ArrayList<List<String>>();
-   
-   private double[][] a;
-   private Matcher m;
+    private BufferedReader sf;
+    private List < String > simlist = new ArrayList < String > ();
+    private String[] sim;
 
-   private double globaloffset;
-   
-   private double offset;
-   
-   public Simfile(String filename, double globaloffset) throws Exception
-   {
-      this.globaloffset = globaloffset;
-      sf = new BufferedReader(new FileReader(filename));
-      while ((line = sf.readLine()) != null)
-      {
-         simlist.add(line);
-      }
-      sim = simlist.toArray(new String[0]);
-   }
-        
-   public String Title()
-   {
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#TITLE:"))
-         {
-            return sim[i].replaceAll("#TITLE:","").replaceAll("\n","").replaceAll(";","");
-         }
-      }
-      return "none";
-   }
-               
-   public String Subtitle()
-   {
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#SUBTITLE:"))
-         {
-            return sim[i].replaceAll("#SUBTITLE:","").replaceAll("\n","").replaceAll(";","");
-         }
-      }
-      return "none";
-   }
+    private String[] bpms;
 
-   public String Artist()
-   {
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#ARTIST:"))
-         {
-            return sim[i].replaceAll("#ARTIST:","").replaceAll("\n","").replaceAll(";","");
-         }
-      }
-      return "none";
-   }
+    private String line;
+    private String notestr;
+    private List < String > noteslist = new ArrayList < String > ();
+    private List < List < String >> note = new ArrayList < List < String >> ();
 
-    public String Genre()
-    {
-        for (int i = 0; i < sim.length; i++)
+    private List < List < String >> note1 = new ArrayList < List < String >> ();
+
+    private double[][] a;
+    private Matcher m;
+
+    private double globaloffset;
+
+    private double offset;
+
+    /**
+     * Create a Simfile object, given a simfile filename (.csm) and an offset in seconds.
+     * The offset should only be 0.0 unless the game starts too slow or too fast on every song.
+     */
+    public Simfile(String filename, double globaloffset) throws Exception {
+        this.globaloffset = globaloffset;
+        sf = new BufferedReader(new FileReader(filename));
+        while ((line = sf.readLine()) != null) // takes file and put each line into a list
         {
-            if (sim[i].contains("#GENRE:"))
+            simlist.add(line);
+        }
+        sim = simlist.toArray(new String[0]); // converts mutable list into immutable array
+    }
+
+    /**
+     * Returns the title (name) of the song as a String, which is specified in the simfile.
+     * If there is no title specified, it will return "none".
+     */
+    public String Title() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#TITLE:")) // searches each line for title, then strips line of unnecessary characters
             {
-                return sim[i].replaceAll("#GENRE:","").replaceAll("\n","").replaceAll(";","");
+                return sim[i].replaceAll("#TITLE:", "").replaceAll("\n", "").replaceAll(";", "");
             }
         }
         return "none";
     }
 
-    public int Year()
-    {
-        for (int i = 0; i < sim.length; i++)
-        {
-            if (sim[i].contains("#YEAR:"))
+    /**
+     * Returns the subtitle of the song as a String, which is specified in the simfile.
+     * This may contain relevant information that may not be in the actual song title.
+     * If there is no subtitle specified, it will return "none".
+     */
+    public String Subtitle() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#SUBTITLE:")) // searches each line for subtitle, then strips line of unnecessary characters
             {
-                return Integer.parseInt(sim[i].replaceAll("#YEAR:","").replaceAll("\n","").replaceAll(";",""));
+                return sim[i].replaceAll("#SUBTITLE:", "").replaceAll("\n", "").replaceAll(";", "");
+            }
+        }
+        return "none";
+    }
+
+    /**
+     * Returns the artist of the song as a String, which is specified in the simfile.
+     * If there is no artist specified, it will return "none".
+     */
+    public String Artist() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#ARTIST:")) // searches each line for artist, then strips line of unnecessary characters
+            {
+                return sim[i].replaceAll("#ARTIST:", "").replaceAll("\n", "").replaceAll(";", "");
+            }
+        }
+        return "none";
+    }
+
+    /**
+     * Returns the genre of the song as a String, which is specified in the simfile.
+     * If there is no genre specified, it will return "none".
+     */
+    public String Genre() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#GENRE:")) // searches each line for genre, then strips line of unnecessary characters
+            {
+                return sim[i].replaceAll("#GENRE:", "").replaceAll("\n", "").replaceAll(";", "");
+            }
+        }
+        return "none";
+    }
+
+    /**
+     * Returns the year of the song as an integer, which is specified in the simfile.
+     * If there is no year specified, it will return 0.
+     */
+    public int Year() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#YEAR:")) // searches each line for year, then strips line of unnecessary characters
+            {
+                return Integer.parseInt(sim[i].replaceAll("#YEAR:", "").replaceAll("\n", "").replaceAll(";", ""));
             }
         }
         return 0;
     }
-                         
-   public String AudioFile()
-   {
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#MUSIC:"))
-         {
-            String temp = sim[i].replaceAll("#MUSIC:","").replaceAll("\n","").replaceAll(";","");
-            return ("assets/songs/" + (temp.substring(0, temp.length() - 4)) + "/" + temp);
-         }
-      }
-      return "yeet";
-   }
-            
-   public double[][] BPM()
-   {
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#BPMS:"))
-         {
-            bpms = sim[i].replaceAll("#BPMS:","").replaceAll("\n","").replaceAll(";","").split(",");
-            double[][] bpmarray = new double[bpms.length][2];
-            for (int a = 0; a < bpms.length; a++)
-            {
-               for (int b = 0; b < 2; b++)
-               {
-                  bpmarray[a][b] = Double.parseDouble(bpms[a].split("=")[b]);
-               }
-            }
-            return bpmarray;
-         }
-      }
-      return a;
-   }
-            
-   public double Offset()
-   {
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#OFFSET:"))
-         {
-            return Double.parseDouble(sim[i].replaceAll("#OFFSET:","").replaceAll("\n","").replaceAll(";",""));
-         }
-      }
-      return 0;
-   }
-            
-   public List<List<String>> Notes()
-   {
-      note = new ArrayList<List<String>>();
-      for (int i = 0; i < sim.length; i++)
-      {
-         if (sim[i].contains("#NOTES:"))
-         {
-            notestr = ""; // first you add all the stuff after #NOTES into one string
-            for (int a = i+1; a < sim.length; a++)
-            {
-               notestr += sim[a].replaceAll(";","");
-            }
-            noteslist = Arrays.asList(notestr.split(",")); // then split by commas
-            Pattern p = Pattern.compile(".{1,4}");
-            for (int b = 0; b < noteslist.size(); b++) // now you have an array of newline strings of numbers so you need to split them into an array inside the other array for each measure
-            {
-               m = p.matcher(noteslist.get(b));
-               note.add(new ArrayList<>());
-               while (m.find())
-               {
-                  note.get(b).add(m.group());
-               }
-            }
-            return note;
-         }
-      }
-      return note;
-   }
 
-   public int NoteCount()
-   {
-      int count = 0;
-      for (List<String> sub : this.Notes())
-      {
-         count += sub.size();
-      }
-      
-      return count;
-   }
-   
-   public List<List<String>> NotesTime()
-   {
-      offset = this.Offset();
-      note1 = this.Notes();
-      
-      double[][] bpmarray = this.BPM();
-      int bpmarraysize = bpmarray.length;
-      int bpmindex = 0;
-      double currentBPM = bpmarray[0][1];
-      double currentBPS = currentBPM/60;
-      double currentBPuS = currentBPS/1000000;
-
-      List<List<String>> notestime = new ArrayList<List<String>>();
-      
-      double ts = offset+globaloffset;
-      
-      for (int i = 0; i < note1.size(); i++)
-      {
-         for (int a = 0; a < note1.get(i).size(); a++) // we have to evaluate BPM in real time when adding stuff so maybe add a while loop or something in here
-         {
-            List<String> tmp = new ArrayList<String>();
-            tmp.add(Double.toString(ts));
-            tmp.add(note1.get(i).get(a));
-            notestime.add(tmp);
-            ts += 1/currentBPS/note1.get(i).size()*4; ///0.896
-            if (bpmindex < bpmarraysize-1 && bpmindex+1 <= bpmarraysize-1)                        
+    /**
+     * Returns the audio file as a String, which is specified in the simfile.
+     * If there is no audio file specified, it will return "none".
+     */
+    public String AudioFile() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#MUSIC:")) // searches each line for audio file, then strips line of unnecessary characters and adds directory
             {
-               if (i >= bpmarray[bpmindex+1][0]) // be careful of >= idk what will happen
-               {
-                  System.out.println("WARNING: BPM HAS CHANGED");
-                  currentBPM = bpmarray[bpmindex+1][1];
-                  currentBPS = currentBPM/60;
-                  currentBPuS = currentBPS/1000000;
-                  bpmindex++;
-               }
+                String temp = sim[i].replaceAll("#MUSIC:", "").replaceAll("\n", "").replaceAll(";", "");
+                return ("assets/songs/" + (temp.substring(0, temp.length() - 4)) + "/" + temp);
             }
-         }
-      }
-      return notestime;
-   }
+        }
+        return "none";
+    }
+
+    /**
+     * Returns the BPM (beats per minute) of the song as a two-dimensional double array, which is specified in the simfile.
+     * The number of beats into the song is the first double in each array, followed by the actual BPM.
+     * If there is no BPM specified, it will return a blank array.
+     */
+    public double[][] BPM() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#BPMS:")) // searches each line for BPM, then strips line of unnecessary characters and splits values into arrays
+            {
+                bpms = sim[i].replaceAll("#BPMS:", "").replaceAll("\n", "").replaceAll(";", "").split(",");
+                double[][] bpmarray = new double[bpms.length][2];
+                for (int a = 0; a < bpms.length; a++) {
+                    for (int b = 0; b < 2; b++) {
+                        bpmarray[a][b] = Double.parseDouble(bpms[a].split("=")[b]);
+                    }
+                }
+                return bpmarray;
+            }
+        }
+        return a;
+    }
+
+    /**
+     * Returns the offset (delay) of the song in seconds as an integer, which is specified in the simfile.
+     * If there is no offset specified, it will return 0.
+     */
+    public double Offset() {
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#OFFSET:")) // searches each line for offset, then strips line of unnecessary characters
+            {
+                return Double.parseDouble(sim[i].replaceAll("#OFFSET:", "").replaceAll("\n", "").replaceAll(";", ""));
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Returns the notes (arrows) of the song as a mutable two-dimensional list of Strings, which are specified in the simfile.
+     * The strings consist of four zeroes and ones, with the numbers corresponding to left, down, up, and right respectively.
+     * For example, 0100 is up, and 0001 is right.
+     * Each list of strings inside the main list is split by beat, meaning that if there are 8 strings in an array, the notes are split into 1/8 beats.
+     * If there are no notes in the simfile, a blank array will be returned.
+     */
+    public List < List < String >> Notes() {
+        note = new ArrayList < List < String >> ();
+        for (int i = 0; i < sim.length; i++) {
+            if (sim[i].contains("#NOTES:")) {
+                notestr = ""; // first add all the stuff after #NOTES into one string
+                for (int a = i + 1; a < sim.length; a++) {
+                    notestr += sim[a].replaceAll(";", "");
+                }
+                noteslist = Arrays.asList(notestr.split(",")); // then split by commas
+                Pattern p = Pattern.compile(".{1,4}");
+                for (int b = 0; b < noteslist.size(); b++) // now there is an array of strings of numbers with newlines 
+                {
+                    m = p.matcher(noteslist.get(b)); // use regular expressions to find the notes
+                    note.add(new ArrayList < > ());
+                    while (m.find()) {
+                        note.get(b).add(m.group()); // split them into an array inside the other array for each measure
+                    }
+                }
+                return note;
+            }
+        }
+        return note;
+    }
+
+    /**
+     * Returns the number of notes in the song's simfile as an integer.
+     */
+    public int NoteCount() {
+        int count = 0;
+        for (List < String > sub: this.Notes()) {
+            count += sub.size();
+        }
+
+        return count;
+    }
+
+    /**
+     * Returns the notes (arrows) of the song along with the times they should occur within the song in seconds
+     * These are returned as a mutable two-dimensional list of Strings, and are specified in the simfile.
+     * The strings are the same as the Notes() function for arrows, and the times are doubles converted into String objects.
+     * If there are no notes in the simfile, a blank array will be returned.
+     */
+    public List < List < String >> NotesTime() {
+        offset = this.Offset();
+        note1 = this.Notes();
+
+        double[][] bpmarray = this.BPM();
+        int bpmarraysize = bpmarray.length;
+        int bpmindex = 0;
+        double currentBPM = bpmarray[0][1];
+        double currentBPS = currentBPM / 60;
+        double currentBPuS = currentBPS / 1000000;
+
+        List < List < String >> notestime = new ArrayList < List < String >> ();
+
+        double ts = offset + globaloffset;
+
+        for (int i = 0; i < note1.size(); i++) // for all the beats in the song
+        {
+            for (int a = 0; a < note1.get(i).size(); a++) // for each note in a beat
+            {
+                List < String > tmp = new ArrayList < String > (); // make a temporary list with the current time and note
+                tmp.add(Double.toString(ts));
+                tmp.add(note1.get(i).get(a));
+                notestime.add(tmp); // add this list to the main list
+                ts += 1 / currentBPS / note1.get(i).size() * 4; // add the amount of time for the next note to the current time
+                if (bpmindex < bpmarraysize - 1 && bpmindex + 1 <= bpmarraysize - 1) {
+                    if (i >= bpmarray[bpmindex + 1][0]) // changes BPM if a BPM should happen after a certain beat
+                    {
+                        currentBPM = bpmarray[bpmindex + 1][1];
+                        currentBPS = currentBPM / 60;
+                        currentBPuS = currentBPS / 1000000;
+                        bpmindex++;
+                    }
+                }
+            }
+        }
+        return notestime;
+    }
 }
