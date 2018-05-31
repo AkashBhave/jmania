@@ -1,20 +1,18 @@
 // blah blah blah imports
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.lang.*;
-import java.math.*;
-import java.net.URL;
-import java.text.*;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings("serial") // kill VSCode errors (does nothing in jGRASP)
+@SuppressWarnings("serial")
+        // kill VSCode errors (does nothing in jGRASP)
 
 // class to begin song playback
 class RunAudio implements Runnable {
@@ -37,7 +35,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     private int[] x = new int[arraySize]; // list of arrow x-coords
     private int[] y = new int[arraySize]; // list of arrow y-coords
     private int velY = 1; // speed of each arrow (not completely true, speed is also effected by timer
-                          // delay)
+    // delay)
     private Window owner; // jframe owner
     private String arrowPath = Driver.projectPath + "/assets/images/"; // sprite path
     private Timer tm = new Timer(1, this); // animation timer
@@ -59,16 +57,16 @@ public class PanelPlay extends JPanel implements ActionListener {
     private String upDefault = "inactiveUp.png";
 
     private long temptime; // basically a stopwatch placeholder, used to collaborate with swing's 60 fps
-                           // cap
+    // cap
     private long milltime = System.currentTimeMillis(); // actual stopwatch
     private boolean songstarted = false; // used to only start song once
 
     private int nextArrow; // the topmost arrow to be destroyed
     private int timeCount; // counter for when to initialize a new arrow
     private int newArrowTime = 225; // when timecount reaches this (this variable's value * timer's delay = time in
-                                    // ms) initialize a new arrow
+    // ms) initialize a new arrow
     private String pressed = notPressed; // set to the value of the arrow key that is pressed, used to check which arrow
-                                         // should be destroyed
+    // should be destroyed
     private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight; // default arrow sprites
     private ImageIcon active[] = new ImageIcon[arraySize]; // list of all the arrows
 
@@ -79,9 +77,14 @@ public class PanelPlay extends JPanel implements ActionListener {
     public File file; // .wav audio file for song
     public Clip music; // actual song clip
 
+
     private JLabel judgeLabel = new JLabel();
     private JProgressBar progressBar = new JProgressBar(0, 100);
     private long currentSongLength;
+    private JPanel statsPanel = new JPanel();
+    private JLabel accuracyLabel = new JLabel();
+    private JLabel scoreLabel = new JLabel();
+
 
     public int addnoteindex() // literally just for the actionlistener
     {
@@ -91,6 +94,7 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     public PanelPlay(Window owner, int width, int height, Simfile simfile) {
         initTopLayout();
+        initStatsLayout();
         initProgressBar();
 
         // Catch all other exceptions
@@ -105,8 +109,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
         /******************************************
          * These are all defined in the Simfile class
-         ******************************************/
-        catch (IOException e) {
+         ******************************************/ catch (IOException e) {
             throw new RuntimeException("There was an I/O error reading the audio file.");
         } catch (LineUnavailableException e) {
             throw new RuntimeException("We messed up, no line is available for the sound.");
@@ -197,6 +200,32 @@ public class PanelPlay extends JPanel implements ActionListener {
         topLayout.setVisible(true);
         add(topLayout);
     }
+
+    private void initStatsLayout() {
+        add(Box.createRigidArea(new Dimension(0, 50)));
+        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        statsPanel.setBackground(new Color(0,0,0,0));
+        Dimension statDimension = new Dimension(Driver.width, 100);
+
+        JPanel accuracyPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 30, 10)); accuracyPanel.setBackground(Driver.bgColor);
+        accuracyPanel.setMaximumSize(statDimension);
+        accuracyPanel.setBackground(new Color(0,0,0,0));
+        accuracyLabel.setText("Accuracy: ");
+        accuracyLabel.setFont(Driver.fontRegular.deriveFont(24f));
+        accuracyPanel.add(accuracyLabel);
+
+        JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 0)); scorePanel.setBackground(Driver.bgColor);
+        scorePanel.setMaximumSize(statDimension);
+        scorePanel.setBackground(new Color(0,0,0,0));
+        scoreLabel.setText("Score: ");
+        scoreLabel.setFont(Driver.fontRegular.deriveFont(24f));
+        scorePanel.add(scoreLabel);
+
+        statsPanel.add(accuracyPanel);
+        statsPanel.add(scorePanel);
+        add(statsPanel);
+    }
+
     private void initProgressBar() {
         add(Box.createVerticalGlue());
 
@@ -204,6 +233,8 @@ public class PanelPlay extends JPanel implements ActionListener {
         progressBar.setForeground(new Color(243, 66, 53));
         progressBar.setBorder(new LineBorder(Color.BLUE));
         progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        progressBar.setFont(Driver.standardFont);
         add(progressBar);
     }
 
@@ -221,18 +252,18 @@ public class PanelPlay extends JPanel implements ActionListener {
 
             switch (direction) {
 
-            case left:
-                leftDefault = "pressedLeft.png";
-                break;
-            case right:
-                rightDefault = "pressedRight.png";
-                break;
-            case down:
-                downDefault = "pressedDown.png";
-                break;
-            case up:
-                upDefault = "pressedUp.png";
-                break;
+                case left:
+                    leftDefault = "pressedLeft.png";
+                    break;
+                case right:
+                    rightDefault = "pressedRight.png";
+                    break;
+                case down:
+                    downDefault = "pressedDown.png";
+                    break;
+                case up:
+                    upDefault = "pressedUp.png";
+                    break;
 
             }
 
@@ -251,18 +282,18 @@ public class PanelPlay extends JPanel implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             switch (direction) {
 
-            case left:
-                leftDefault = "inactiveLeft.png";
-                break;
-            case right:
-                rightDefault = "inactiveRight.png";
-                break;
-            case down:
-                downDefault = "inactiveDown.png";
-                break;
-            case up:
-                upDefault = "inactiveup.png";
-                break;
+                case left:
+                    leftDefault = "inactiveLeft.png";
+                    break;
+                case right:
+                    rightDefault = "inactiveRight.png";
+                    break;
+                case down:
+                    downDefault = "inactiveDown.png";
+                    break;
+                case up:
+                    upDefault = "inactiveup.png";
+                    break;
 
             }
         }
@@ -272,7 +303,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Updates the progress bar
         long currentSongPosition = this.music.getMicrosecondPosition();
-        int songProgress = (int)((float)currentSongPosition/this.currentSongLength*100);
+        int songProgress = (int) ((float) currentSongPosition / this.currentSongLength * 100);
         progressBar.setValue(songProgress);
 
         timeCount++;
@@ -301,52 +332,52 @@ public class PanelPlay extends JPanel implements ActionListener {
         if (y[nextArrow] < 720 && active[nextArrow] != null) {
             switch (pressed) {
 
-            case left:
-                if (active[nextArrow].getDescription() == "left") {
-                    int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                    displayResults(judge);
-                    if (judge > 0) {
-                        active[nextArrow] = null;
-                        this.addNote(judge);
-                        nextArrow++;
+                case left:
+                    if (active[nextArrow].getDescription() == "left") {
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
+                        displayResults(judge);
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow++;
+                        }
                     }
-                }
-                break;
-            case down:
-                if (active[nextArrow].getDescription() == "down") {
-                    int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                    displayResults(judge);
-                    if (judge > 0) {
-                        active[nextArrow] = null;
-                        this.addNote(judge);
-                        nextArrow++;
+                    break;
+                case down:
+                    if (active[nextArrow].getDescription() == "down") {
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
+                        displayResults(judge);
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow++;
+                        }
                     }
-                }
-                break;
-            case up:
-                if (active[nextArrow].getDescription() == "up") {
-                    int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                    displayResults(judge);
-                    if (judge > 0) {
-                        active[nextArrow] = null;
-                        this.addNote(judge);
-                        nextArrow++;
+                    break;
+                case up:
+                    if (active[nextArrow].getDescription() == "up") {
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
+                        displayResults(judge);
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow++;
+                        }
                     }
-                }
-                break;
-            case right:
-                if (active[nextArrow].getDescription() == "right") {
-                    int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
-                    displayResults(judge);
-                    if (judge > 0) {
-                        active[nextArrow] = null;
-                        this.addNote(judge);
-                        nextArrow++;
+                    break;
+                case right:
+                    if (active[nextArrow].getDescription() == "right") {
+                        int judge = this.Judgement(smf, nextArrow, y[nextArrow]);
+                        displayResults(judge);
+                        if (judge > 0) {
+                            active[nextArrow] = null;
+                            this.addNote(judge);
+                            nextArrow++;
+                        }
                     }
-                }
-                break;
-            case notPressed:
-                break;
+                    break;
+                case notPressed:
+                    break;
             }
             pressed = notPressed;
         }
@@ -420,32 +451,32 @@ public class PanelPlay extends JPanel implements ActionListener {
     private void loadArrow(String direction) {
         switch (direction) {
 
-        case left:
-            active[noteindex] = new ImageIcon(arrowPath + "activeLeft.png");
-            active[noteindex].setDescription("left");
-            x[noteindex] = 425;
-            break;
+            case left:
+                active[noteindex] = new ImageIcon(arrowPath + "activeLeft.png");
+                active[noteindex].setDescription("left");
+                x[noteindex] = 425;
+                break;
 
-        case down:
-            active[noteindex] = new ImageIcon(arrowPath + "activeDown.png");
-            active[noteindex].setDescription("down");
-            x[noteindex] = 525;
-            break;
+            case down:
+                active[noteindex] = new ImageIcon(arrowPath + "activeDown.png");
+                active[noteindex].setDescription("down");
+                x[noteindex] = 525;
+                break;
 
-        case up:
-            active[noteindex] = new ImageIcon(arrowPath + "activeUp.png");
-            active[noteindex].setDescription("up");
-            x[noteindex] = 625;
-            break;
+            case up:
+                active[noteindex] = new ImageIcon(arrowPath + "activeUp.png");
+                active[noteindex].setDescription("up");
+                x[noteindex] = 625;
+                break;
 
-        case right:
-            active[noteindex] = new ImageIcon(arrowPath + "activeRight.png");
-            active[noteindex].setDescription("right");
-            x[noteindex] = 725;
-            break;
+            case right:
+                active[noteindex] = new ImageIcon(arrowPath + "activeRight.png");
+                active[noteindex].setDescription("right");
+                x[noteindex] = 725;
+                break;
 
-        case notPressed:
-            break;
+            case notPressed:
+                break;
 
         }
     }
@@ -489,27 +520,27 @@ public class PanelPlay extends JPanel implements ActionListener {
     public void displayResults(int judge) {
         // Updates the judgement text
         switch (judge) {
-        case 3:
-            judgeLabel.setText("PERFECT");
-            judgeLabel.setForeground(new Color(56,142,60));
-            break;
-        case 2:
-            judgeLabel.setText("GREAT");
-            judgeLabel.setForeground(new Color(245,124,0));
-            break;
-        case 1:
-            judgeLabel.setText("GOOD");
-            judgeLabel.setForeground(new Color(251,192,45));
-            break;
-        case 0:
-            judgeLabel.setText("MISS");
-            judgeLabel.setForeground(new Color(211,47,47));
-            break;
+            case 3:
+                judgeLabel.setText("PERFECT");
+                judgeLabel.setForeground(new Color(56, 142, 60));
+                break;
+            case 2:
+                judgeLabel.setText("GREAT");
+                judgeLabel.setForeground(new Color(245, 124, 0));
+                break;
+            case 1:
+                judgeLabel.setText("GOOD");
+                judgeLabel.setForeground(new Color(251, 192, 45));
+                break;
+            case 0:
+                judgeLabel.setText("MISS");
+                judgeLabel.setForeground(new Color(211, 47, 47));
+                break;
 
         }
-
-        // System.out.println(this.calcScore());
-        // System.out.println(this.calcAccuracy());
+        double roundedAccuracy = Math.round(this.calcAccuracy() * 10000.0) / 100.0;
+        accuracyLabel.setText("Accuracy: " + roundedAccuracy + "%");
+        scoreLabel.setText("Score: " + this.calcScore());
     }
 
 }
