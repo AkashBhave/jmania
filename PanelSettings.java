@@ -8,33 +8,70 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Properties;
 
+/**
+* Settings Screen
+*/
 @SuppressWarnings("serial")
 public class PanelSettings extends JPanel {
-
+   
+    /** 
+    * Main JFrame this panel is drawn upon
+    */
     final private Window owner;
+    /** 
+    * Height of GUI window
+    */
     private int height;
+    /** 
+    * Main JFrame this panel is drawn upon
+    */
     private int width;
+    /** 
+    * Main JFrame this panel is drawn upon
+    */
     private JSlider[] sliders;
+    /** 
+    * Main JFrame this panel is drawn upon
+    */
     private JLabel[] sliderLabels;
+    /** 
+    * Main JFrame this panel is drawn upon
+    */
     private PanelBack backButtonLayout;
+    /** 
+    * Main JFrame this panel is drawn upon
+    */
     private static Properties props = new Properties();
 
+    /**
+    * Creates a new PanelSettings on the Window owner with the given width and height
+    * @param owner JFrame window 
+    * @param width Width of window
+    * @param height Height of window
+    */ 
     public PanelSettings(Window owner, int width, int height) {
 
         this.width = width;
         this.height = height;
         this.owner = owner;
 
-        loadProps();
+        loadProps(); // loads settings file
 
-        createGUI();
+        createGUI(); // draws sliders and buttons
     }
 
+    /** 
+    * Draws background
+    */
     public void paintComponent(Graphics g) {
         g.setColor(Driver.bgColor);
         g.fillRect(0, 0, width, height);
     }
 
+    /**
+    * Loads app.properties.
+    * Used for reading and saving settings.
+    */
     private static void loadProps() {
         try {
             FileInputStream in = new FileInputStream(Driver.projectPath + "/app.properties");
@@ -45,16 +82,23 @@ public class PanelSettings extends JPanel {
         }
     }
 
+    /**
+    * Creates layout and draws Sliders and Buttons.
+    * Also sets key bindings.
+    */
     private void createGUI() {
+    
+        // creates a layout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
+        
+        // creates the back button
         backButtonLayout = new PanelBack();
         backButtonLayout.backButton.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelHome(owner, Driver.width, Driver.height)));
         });
         add(backButtonLayout);
 
-
+        // panel for the sliders
         JPanel controlsPanel = new JPanel();
         controlsPanel.setLayout(new GridBagLayout());
         controlsPanel.setBackground(Driver.bgColor);
@@ -62,19 +106,11 @@ public class PanelSettings extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(10, 50, 10, 50);
 
-
-        sliderLabels = new JLabel[4];
+         
+        sliderLabels = new JLabel[1];
         sliders = new JSlider[4];
 
-        sliderLabels[0] = new JLabel("Effects Volume");
-        c.gridx = 0; c.gridy = 0;
-        //controlsPanel.add(sliderLabels[0], c);
-        sliders[0] = new JSlider(JSlider.VERTICAL, 0, 100, Integer.parseInt(props.getProperty("effectsVolume")));
-        sliders[0].setMajorTickSpacing(10);
-        sliders[0].setMinorTickSpacing(1);
-        c.gridx = 0; c.gridy = 1;
-        //controlsPanel.add(sliders[0], c);
-
+        // adds a settings slider for song volume
         sliderLabels[1] = new JLabel("Song Volume");
         c.gridx = 1; c.gridy = 0;
         controlsPanel.add(sliderLabels[1], c);
@@ -83,23 +119,6 @@ public class PanelSettings extends JPanel {
         controlsPanel.add(sliders[1], c);
         sliders[1].setMajorTickSpacing(10);
         sliders[1].setMinorTickSpacing(1);
-
-        sliderLabels[2] = new JLabel("Margin of Error");
-        c.gridx = 2; c.gridy = 0;
-        //controlsPanel.add(sliderLabels[2], c);
-        sliders[2] = new JSlider(JSlider.VERTICAL, 1, 10, Integer.parseInt(props.getProperty("marginOfError")));
-        c.gridx = 2; c.gridy = 1;
-        //controlsPanel.add(sliders[2], c);
-        sliders[2].setMajorTickSpacing(1);
-
-        sliderLabels[3] = new JLabel("Note Speed");
-        c.gridx = 3; c.gridy = 0;
-        //controlsPanel.add(sliderLabels[3], c);
-        sliders[3] = new JSlider(JSlider.VERTICAL, 1, 10, Integer.parseInt(props.getProperty("noteSpeed")));
-        c.gridx = 3; c.gridy = 1;
-        //controlsPanel.add(sliders[3], c);
-        sliders[3].setMajorTickSpacing(1);
-
 
         for(int i = 0; i < sliders.length; i++) {
             sliders[i].setPaintTicks(true);
@@ -122,6 +141,7 @@ public class PanelSettings extends JPanel {
 
         add(controlsPanel);
 
+        // key bindings
         int backMap = JComponent.WHEN_IN_FOCUSED_WINDOW;
         InputMap imap = this.getInputMap(backMap);
         KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -134,6 +154,9 @@ public class PanelSettings extends JPanel {
 
     }
 
+    /** 
+    * Goes back to PanelHome if the back button is pressed
+    */
     @SuppressWarnings("serial")
     private class BackAction extends AbstractAction {
         public void actionPerformed (ActionEvent e) {
@@ -141,15 +164,15 @@ public class PanelSettings extends JPanel {
         }
     }
 
+    /**
+    * Saves settings from JSliders to app.properties
+    */
     private class saveProps implements ActionListener {
         public void actionPerformed (ActionEvent e) {
 
             try {
                 FileOutputStream out = new FileOutputStream(Driver.projectPath + "/app.properties");
                 props.setProperty("effectsVolume", sliders[0].getValue() + "");
-                props.setProperty("songVolume", sliders[1].getValue() + "");
-                props.setProperty("marginOfError", sliders[2].getValue() + "");
-                props.setProperty("noteSpeed", sliders[3].getValue() + "");
                 props.store(out, "Settings");
                 out.close();
                 System.out.println("saved.");
