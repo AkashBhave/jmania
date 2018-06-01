@@ -254,19 +254,15 @@ public class PanelPlay extends JPanel implements ActionListener {
      */
     private JLabel accuracyLabel = new JLabel();
 
-<<<<<<< HEAD
     /**
      * The label which displays a score based on how accurately and how well you pressed the arrows.
      */
     private JLabel scoreLabel = new JLabel();
-=======
+
     public static Color colorPerfect = new Color(56, 142, 60);
     public Color colorGreat = new Color(245, 124, 0);
     public Color colorGood = new Color(251, 192, 45);
     public Color colorMiss = new Color(211, 47, 47);
-
-
->>>>>>> 48bbdd9b46f7d02c35d37fddd1ffdc5f3e121582
 
     /**
      * A function that adds to the note index variable, in case variables must be static within a function.

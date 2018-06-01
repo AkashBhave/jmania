@@ -108,17 +108,17 @@ public class PanelSettings extends JPanel {
 
          
         sliderLabels = new JLabel[1];
-        sliders = new JSlider[4];
+        sliders = new JSlider[1];
 
         // adds a settings slider for song volume
-        sliderLabels[1] = new JLabel("Song Volume");
+        sliderLabels[0] = new JLabel("Song Volume");
         c.gridx = 1; c.gridy = 0;
-        controlsPanel.add(sliderLabels[1], c);
-        sliders[1] = new JSlider(JSlider.VERTICAL, 0, 100, Integer.parseInt(props.getProperty("songVolume")));
+        controlsPanel.add(sliderLabels[0], c);
+        sliders[0] = new JSlider(JSlider.VERTICAL, 0, 100, Integer.parseInt(props.getProperty("songVolume")));
         c.gridx = 1; c.gridy = 1;
-        controlsPanel.add(sliders[1], c);
-        sliders[1].setMajorTickSpacing(10);
-        sliders[1].setMinorTickSpacing(1);
+        controlsPanel.add(sliders[0], c);
+        sliders[0].setMajorTickSpacing(10);
+        sliders[0].setMinorTickSpacing(1);
 
         for(int i = 0; i < sliders.length; i++) {
             sliders[i].setPaintTicks(true);

@@ -55,7 +55,7 @@ public class PanelSelect extends JPanel {
     /**
     * Section for information on selected song
     */
-    private JPanel songInfoPanel = new JPanel();
+    public static JPanel songInfoPanel = new JPanel();
    
     /**
     * Button to select the previous song
@@ -68,7 +68,7 @@ public class PanelSelect extends JPanel {
      /**
     * Button to begin playing the selected song
     */
-    private JButton playButton;
+    public static JButton playButton;
 
     
     /**
