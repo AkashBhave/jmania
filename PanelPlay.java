@@ -1,5 +1,3 @@
-// blah blah blah imports
-
 import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -17,93 +15,271 @@ import java.util.Properties;
 @SuppressWarnings("serial")
         // kill VSCode errors (does nothing in jGRASP)
 
-// class to begin song playback
+/**
+ * This class can be externally called from a static function and can run in a separate thread
+ */
 class RunAudio implements Runnable {
+    /**
+     * The object containing the audio stream within the RunAudio class.
+     */
     private Clip music;
 
+    /**
+     * Creates a RunAudio object, takes a Clip object and puts it in a class variable.
+     */
     public RunAudio(Clip music) {
         this.music = music;
     }
 
+    /**
+     * Starts the audio stream (music) if it is not already running.
+     */
     public void run() {
         if (!music.isRunning())
             music.start();
     }
 }
 
+/**
+ * The panel for the actual gameplay of JMania.
+ */
 public class PanelPlay extends JPanel implements ActionListener {
 
-    private int arraySize = 1000; // max number of arrows
+    /**
+     * The array size of the arrow coordinate arrays.
+     * Consequently, this is the max number of arrows which can be in a song.
+     */
+    private int arraySize = 1000;
+
+    /**
+     * The dimensions of the panel as integers.
+     */
     private int width, height;
-    private int[] x = new int[arraySize]; // list of arrow x-coords
-    private int[] y = new int[arraySize]; // list of arrow y-coords
-    private int velY = 1; // speed of each arrow (not completely true, speed is also effected by timer
-    // delay)
-    private Window owner; // jframe owner
-    private String arrowPath = Driver.projectPath + "/assets/images/"; // sprite path
-    private Timer tm = new Timer(1, this); // animation timer
+
+    /**
+     * The x-coordinates (horizontal position) for the arrows.
+     */
+    private int[] x = new int[arraySize];
+
+    /**
+     * The y-coordinates (vertical position) for the arrows.
+     */
+    private int[] y = new int[arraySize];
+
+    /**
+     * The number of pixels the y-coordinate changes per tick (each time the timer runs)
+     */
+    private int velY = 1;
+
+    /**
+     * The owner of the JFrame.
+     */
+    private Window owner;
+
+    /**
+     * The path where sprites are located.
+     */
+    private String arrowPath = Driver.projectPath + "/assets/images/";
+
+    /**
+     * The main timer that updates gameplay information such as graphics, timing, judgement, etc.
+     */
+    private Timer tm = new Timer(1, this);
+
+    /**
+     * The thread that plays the audio stream (music).
+     */
     private Thread audioThread;
 
-    public List<Integer> scores = new ArrayList<Integer>(); // list of scores
+    /**
+     * A list of scores separated by each individual arrow.
+     * Stored as integers, such that 3 is perfect, 2 is great, 1 is good, and 0 is a miss.
+     */
+    public List<Integer> scores = new ArrayList<Integer>();
 
-    // variable names, interpretation of .csm notes
+    /**
+     * A constant specifying a left arrow in a simfile.
+     */
     private final String left = "1000";
+
+    /**
+     * A constant specifying a downwards arrow in a simfile.
+     */
     private final String down = "0100";
+
+    /**
+     * A constant specifying an upwards arrow in a simfile.
+     */
     private final String up = "0010";
+
+    /**
+     * A constant specifying a right arrow in a simfile.
+     */
     private final String right = "0001";
+
+    /**
+     * A constant specifying no arrows pressed in a simfile.
+     */
     private final String notPressed = "0000";
 
-    // inactive sprites, used to switch when key pressed
+    /**
+     * A string containing the filename for the image of an inactive left arrow.
+     */
     private String leftDefault = "inactiveLeft.png";
+
+    /**
+     * A string containing the filename for the image of an inactive right arrow.
+     */
     private String rightDefault = "inactiveRight.png";
+
+    /**
+     * A string containing the filename for the image of an inactive downwards arrow.
+     */
     private String downDefault = "inactiveDown.png";
+
+    /**
+     * A string containing the filename for the image of an inactive upwards arrow.
+     */
     private String upDefault = "inactiveUp.png";
 
-    private long temptime; // basically a stopwatch placeholder, used to collaborate with swing's 60 fps
-    // cap
-    private int progressBarUpdate = 0; // delays the rate at which the progress bar updates
-    private long milltime = System.currentTimeMillis(); // actual stopwatch
-    private boolean songstarted = false; // used to only start song once
+    /**
+     * A long value used to store the current time on the computer, to keep track of when to draw a frame.
+     * Used in conjunction with temptime to be updated when there is an adequate difference between the two.
+     */
+    private long milltime = System.currentTimeMillis();
 
-    private int nextArrow; // the topmost arrow to be destroyed
-    private int timeCount; // counter for when to initialize a new arrow
-    private int newArrowTime = 225; // when timecount reaches this (this variable's value * timer's delay = time in
-    // ms) initialize a new arrow
-    private String pressed = notPressed; // set to the value of the arrow key that is pressed, used to check which arrow
-    // should be destroyed
-    private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight; // default arrow sprites
-    private ImageIcon active[] = new ImageIcon[arraySize]; // list of all the arrows
+    /**
+     * A long value used to store the current time on the computer, to keep track of when to draw a frame.
+     * Used in conjunction with milltime to be updated until there is an adequate difference between the two.
+     */
+    private long temptime;
 
-    public Simfile smf; // .csm file to read
+    /**
+     * An integer used to count milliseconds until the progress bar should be updated.
+     */
+    private int progressBarUpdate = 0;
 
-    List<List<String>> timestamp; // list of timestamps to make notes appear at the right time
-    public int noteindex = 0; // number of arrows initialized
-    public File file; // .wav audio file for song
-    public Clip music; // actual song clip
+    /**
+     * Used to check if the song has started, and should only turn on once.
+     */
+    private boolean songstarted = false;
 
+    /**
+     * The topmost arrow to be destroyed (as an integer, based on note index).
+     */
+    private int nextArrow;
+
+    /**
+     * A counter determining when to initialize a new arrow.
+     */
+    private int timeCount;
+
+    /**
+     * An integer used as a multiplier for the time to initialize a new arrow.
+     */
+    private int newArrowTime = 225; 
+
+    /**
+     * A string set to the value of the arrow key that is pressed, used to check which arrow should be destroyed.
+     */
+    private String pressed = notPressed;
+
+    /**
+     * The default arrow sprite objects.
+     */
+    private ImageIcon inactiveLeft, inactiveDown, inactiveUp, inactiveRight;
+
+    /**
+     * A list of all the arrows as sprites.
+     */
+    private ImageIcon active[] = new ImageIcon[arraySize];
+
+    /**
+     * The default arrow sprite objects.
+     */
+    public Simfile smf;
+
+    /**
+     * List of times when each note should appear, based on Simfile.NotesTime().
+     */
+    List<List<String>> timestamp;
+
+    /**
+     * The current note which is to appear, based on order of time.
+     */
+    public int noteindex = 0;
+
+    /**
+     * The object used to store the audio file being used.
+     */
+    public File file;
+
+    /**
+     * The audio stream as a Clip object which can be directly played and accessed.
+     */
+    public Clip music;
+
+    /**
+     * The current position of the song in microseconds, updated within the main timer
+     */
     private double micro;
 
+    /**
+     * The label that displays perfects, greats, goods, and misses.
+     */
     private JLabel judgeLabel = new JLabel();
-    private JProgressBar progressBar = new JProgressBar(0, 100);
-    private long currentSongLength;
-    private int songProgress;
-    private JPanel statsPanel = new JPanel();
-    private JLabel accuracyLabel = new JLabel();
-    private JLabel scoreLabel = new JLabel();
 
+    /**
+     * The progress bar which displays how far you are in the song.
+     */
+    private JProgressBar progressBar = new JProgressBar(0, 100);
+
+    /**
+     * The length of the audio stream (music) in microseconds.
+     */
+    private long currentSongLength;
+
+    /**
+     * The actual value determining how far you are in the song.
+     */
+    private int songProgress;
+
+    /**
+     * The panel containing the accuracy and score labels.
+     */
+    private JPanel statsPanel = new JPanel();
+
+    /**
+     * The label which displays how accurately you pressed the arrows, as a percentage.
+     */
+    private JLabel accuracyLabel = new JLabel();
+
+<<<<<<< HEAD
+    /**
+     * The label which displays a score based on how accurately and how well you pressed the arrows.
+     */
+    private JLabel scoreLabel = new JLabel();
+=======
     public static Color colorPerfect = new Color(56, 142, 60);
     public Color colorGreat = new Color(245, 124, 0);
     public Color colorGood = new Color(251, 192, 45);
     public Color colorMiss = new Color(211, 47, 47);
 
 
+>>>>>>> 48bbdd9b46f7d02c35d37fddd1ffdc5f3e121582
 
-    public int addnoteindex() // literally just for the actionlistener
+    /**
+     * A function that adds to the note index variable, in case variables must be static within a function.
+     */
+    public int addnoteindex()
     {
         noteindex++;
         return 1;
     }
 
+    /**
+     * Creates a PanelPlay object to display the actual game.
+     */
     public PanelPlay(Window owner, int width, int height, Simfile simfile) {
         initTopLayout();
         initStatsLayout();
@@ -158,6 +334,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         KeyStroke releaseRight = KeyStroke.getKeyStroke("released RIGHT");
         KeyStroke releaseUp = KeyStroke.getKeyStroke("released UP");
         KeyStroke releaseDown = KeyStroke.getKeyStroke("released DOWN");
+
         imap.put(leftKey, "loadLeft");
         imap.put(rightKey, "loadRight");
         imap.put(downKey, "loadDown");
@@ -182,6 +359,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         owner.requestFocus();
     }
 
+    /**
+     * A function that changes the song's volume (loudness)
+     */
     private void adjustSongVolume() throws IOException {
         Properties gameProps = new Properties();
         gameProps.load(new FileInputStream(Driver.projectPath + "/app.properties"));
@@ -194,6 +374,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         gainControl.setValue(finalVolume);
     }
 
+    /**
+     * Initializes the back button and judgement labels.
+     */
     private void initTopLayout() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Driver.bgColor);
@@ -222,6 +405,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         add(topLayout);
     }
 
+    /**
+     * Stops the game (stops drawing and playing audio)
+     */
     private void endRound() {
         // Stops reading the simfile
         tm.stop();
@@ -233,6 +419,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         // Sets the window to show PanelSelect
     }
 
+    /**
+     * Initializes the layout for the accuracy and score labels
+     */
     private void initStatsLayout() {
         add(Box.createRigidArea(new Dimension(0, 50)));
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
@@ -258,6 +447,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         add(statsPanel);
     }
 
+    /**
+     * Initializes the progress bar on the bottom of the screen, determining how far you have gotten in the song.
+     */
     private void initProgressBar() {
         add(Box.createVerticalGlue());
 
@@ -270,16 +462,26 @@ public class PanelPlay extends JPanel implements ActionListener {
         add(progressBar);
     }
 
-    // gets called when arrow key is pressed, parameter depends on which arrow key
+    /**
+     * A class to handle keypresses and compare to arrows
+     */
     private class ArrowAction extends AbstractAction {
 
+        /**
+         * A string indicating what arrow key is being pressed
+         */
         private String direction;
 
+        /**
+         * Creates an ArrowAction object and puts the arrow key direction into a class variable
+         */
         public ArrowAction(String direction) {
             this.direction = direction;
         }
 
-        // sends a value to pressed based on which key was pressed
+        /**
+         * Displays what arrow is being pressed (by adding brightness to the judgement arrows) based on direction
+         */
         public void actionPerformed(ActionEvent e) {
 
             switch (direction) {
@@ -303,14 +505,26 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * A class to handle releasing of keypresses and compare to arrows
+     */
     private class ReleaseAction extends AbstractAction {
 
+        /**
+         * A string indicating what arrow key is being pressed
+         */
         private String direction;
 
+        /**
+         * Creates an ReleaseAction object and puts the arrow key direction into a class variable
+         */
         public ReleaseAction(String direction) {
             this.direction = direction;
         }
 
+        /**
+         * Displays what arrow is being pressed (by adding brightness to the judgement arrows) based on direction
+         */
         public void actionPerformed(ActionEvent e) {
             switch (direction) {
 
@@ -331,11 +545,14 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
     }
 
-    // called every time the timer runs
+    /**
+     * The function that runs based on the timer.
+     * Graphics and music are mostly handled within this function.
+     */
     public void actionPerformed(ActionEvent e) {
         timeCount++;
 
-        // This means that the song has ended
+        //Ends game if music finishes playing
         if(!music.isRunning() && music.getMicrosecondPosition() > 0) {
             endRound();
             SwingUtilities.invokeLater(() -> owner.showView(new PanelEnd(owner, Driver.width, Driver.height, this.calcAccuracy(), this.scores)));
@@ -453,7 +670,9 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     }
 
-    // DRAW!
+    /**
+     * The function that handles drawing the graphics on to the screen.
+     */
     public void paintComponent(Graphics g) {
 
         // background
@@ -475,7 +694,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         tm.start(); // start animation
     }
 
-    // default arrows
+    /**
+     * Loads images of arrows into ImageIcon variables and draws them on the screen.
+     */
     private void loadStaticSprites(Graphics g) {
 
         inactiveDown = new ImageIcon(arrowPath + downDefault);
@@ -490,7 +711,9 @@ public class PanelPlay extends JPanel implements ActionListener {
 
     }
 
-    // make new arrows
+    /**
+     * Loads new arrows on the screen based on the direction that it should be in (which is passed into it).
+     */
     private void loadArrow(String direction) {
         switch (direction) {
 
@@ -524,8 +747,12 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Determines how accurate the pressed arrow is compared to when it should be pressed (through y-coordinates of arrows).
+     * Returns 3 for perfect, 2 for great, 1 for good, and 0 for a miss.
+     */
     public int Judgement(Simfile sim, int notenum, int y) {
-        int diff = Math.abs(y - 80);
+        int diff = Math.abs(y - 80); // get difference between the y-coordinate positions when pressed and the actual arrow on screen
 
         if (diff <= 30) // perfect
         {
@@ -542,6 +769,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Calculates the score by finding the sum of the Judgement scores.
+     */
     public int calcScore() {
         int totalscore = 0;
         for (Integer s : scores)
@@ -550,18 +780,27 @@ public class PanelPlay extends JPanel implements ActionListener {
         return totalscore;
     }
 
+    /**
+     * Calculates the accuracy by dividing calcScore() by the maximum possible score (the amount of arrows multiplied by 3, as 3 is perfect).
+     * Returns a double which is a percentage.
+     */
     public double calcAccuracy() {
         int totalscore = calcScore();
 
         return (double) totalscore / ((double) this.scores.size() * 3.0);
     }
 
+    /**
+     * Adds an arrow's score to the total list of scores.
+     */
     public void addNote(int score) {
         scores.add(score);
     }
 
+    /**
+     * Updates the judgement text, displaying whether the player got a perfect, great, good, or miss on the most recently pressed arrow.
+     */
     public void updateResults(int judge) {
-        // Updates the judgement text
         switch (judge) {
             case 3:
                 judgeLabel.setText("PERFECT");
