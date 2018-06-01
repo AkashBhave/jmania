@@ -5,19 +5,20 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 /**
-* JFrame upon which GUI Panels are drawn
-*/
+ * JFrame upon which GUI Panels are drawn
+ */
 public class Window extends JFrame {
 
     /**
-    * Panel that is in use at any given point
-    */
+     * Panel that is in use at any given point
+     */
     private JPanel view;
 
     /**
-    * Creates a new Window with a given Title/Header
-    * @param title Title of the window
-    */
+     * Creates a new Window with a given Title/Header
+     *
+     * @param title Title of the window
+     */
     public Window(String title) {
 
         super(title);
@@ -26,9 +27,9 @@ public class Window extends JFrame {
     }
 
     /**
-    * Sets window properties such as size and location.
-    * Also sets application icon.
-    */
+     * Sets window properties such as size and location.
+     * Also sets application icon.
+     */
     private void createGUI() {
 
         // Set application icon
@@ -44,17 +45,18 @@ public class Window extends JFrame {
         // Adds a center panel
         view = new JPanel(new BorderLayout());
         add(view, BorderLayout.CENTER);
-        
+
         // Sets default panel to PanelHome
         showView(new PanelHome(this, Driver.width, Driver.height));
         pack();
 
     }
-    
+
     /**
-    * Displays a given panel on the Window
-    * @param panel The JPanel object to display
-    */
+     * Displays a given panel on the Window
+     *
+     * @param panel The JPanel object to display
+     */
     public void showView(JPanel panel) {
 
         view.removeAll();

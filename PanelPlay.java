@@ -179,7 +179,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     /**
      * An integer used as a multiplier for the time to initialize a new arrow.
      */
-    private int newArrowTime = 225; 
+    private int newArrowTime = 225;
 
     /**
      * A string set to the value of the arrow key that is pressed, used to check which arrow should be destroyed.
@@ -269,8 +269,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     /**
      * A function that adds to the note index variable, in case variables must be static within a function.
      */
-    public int addnoteindex()
-    {
+    public int addnoteindex() {
         noteindex++;
         return 1;
     }
@@ -367,8 +366,9 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         FloatControl gainControl = (FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN);
         float clipRange = gainControl.getMaximum() - gainControl.getMinimum();
+        clipRange = (float) (clipRange - (clipRange*0.05)); // Prevents volume from being too low
         float clipVolStep = clipRange / 100;
-        float finalVolume = gainControl.getMinimum() + (clipVolStep*songVolume);
+        float finalVolume = gainControl.getMinimum() + (clipVolStep * songVolume);
         gainControl.setValue(finalVolume);
     }
 
@@ -423,19 +423,21 @@ public class PanelPlay extends JPanel implements ActionListener {
     private void initStatsLayout() {
         add(Box.createRigidArea(new Dimension(0, 50)));
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
-        statsPanel.setBackground(new Color(0,0,0,0));
+        statsPanel.setBackground(new Color(0, 0, 0, 0));
         Dimension statDimension = new Dimension(Driver.width, 100);
 
-        JPanel accuracyPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 30, 10)); accuracyPanel.setBackground(Driver.bgColor);
+        JPanel accuracyPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 30, 10));
+        accuracyPanel.setBackground(Driver.bgColor);
         accuracyPanel.setMaximumSize(statDimension);
-        accuracyPanel.setBackground(new Color(0,0,0,0));
+        accuracyPanel.setBackground(new Color(0, 0, 0, 0));
         accuracyLabel.setText("Accuracy: ");
         accuracyLabel.setFont(Driver.fontRegular.deriveFont(24f));
         accuracyPanel.add(accuracyLabel);
 
-        JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 0)); scorePanel.setBackground(Driver.bgColor);
+        JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 0));
+        scorePanel.setBackground(Driver.bgColor);
         scorePanel.setMaximumSize(statDimension);
-        scorePanel.setBackground(new Color(0,0,0,0));
+        scorePanel.setBackground(new Color(0, 0, 0, 0));
         scoreLabel.setText("Score: ");
         scoreLabel.setFont(Driver.fontRegular.deriveFont(24f));
         scorePanel.add(scoreLabel);
@@ -551,7 +553,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         timeCount++;
 
         //Ends game if music finishes playing
-        if(!music.isRunning() && music.getMicrosecondPosition() > 0) {
+        if (!music.isRunning() && music.getMicrosecondPosition() > 0) {
             endRound();
             SwingUtilities.invokeLater(() -> owner.showView(new PanelEnd(owner, Driver.width, Driver.height, this.calcAccuracy(), this.scores)));
         }

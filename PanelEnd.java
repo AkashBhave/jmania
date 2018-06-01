@@ -47,12 +47,11 @@ public class PanelEnd extends JPanel {
     private JPanel songStatsPanel = new JPanel();
 
     /**
-     *
-     * @param owner JFrame window
-     * @param width Width of window
-     * @param height Height of window
+     * @param owner    JFrame window
+     * @param width    Width of window
+     * @param height   Height of window
      * @param accuracy Total accuracy of all arrows pressed in game
-     * @param scores List of scores for all arrows pressed
+     * @param scores   List of scores for all arrows pressed
      */
     public PanelEnd(Window owner, int width, int height, double accuracy, List<Integer> scores) {
 
@@ -67,6 +66,7 @@ public class PanelEnd extends JPanel {
 
     /**
      * Draws the background
+     *
      * @param g Required graphics parameter
      */
     public void paintComponent(Graphics g) {
@@ -97,7 +97,7 @@ public class PanelEnd extends JPanel {
         imap.put(escape, "return");
 
         ActionMap amap = this.getActionMap();
-        amap.put("return", new BackAction() );
+        amap.put("return", new BackAction());
 
         owner.requestFocus();
     }
@@ -128,17 +128,17 @@ public class PanelEnd extends JPanel {
         int totalScore = 0;
         System.out.println(totalScores);
         int[] scoresArray = new int[4];
-        String[] typesArray = new String[] {"MISS", "GOOD", "GREAT", "PERFECT"};
-        Color[] colorsArray = new Color[] {PanelPlay.colorMiss, PanelPlay.colorGood, PanelPlay.colorGreat, PanelPlay.colorPerfect};
+        String[] typesArray = new String[]{"MISS", "GOOD", "GREAT", "PERFECT"};
+        Color[] colorsArray = new Color[]{PanelPlay.colorMiss, PanelPlay.colorGood, PanelPlay.colorGreat, PanelPlay.colorPerfect};
         // Iterates through the list and creates sums
         for (Integer score : scores) {
             scoresArray[score]++;
             totalScore += score;
         }
         // Displays a JLabel for each type of judgement
-        for(int s = 0; s < scoresArray.length; s++) {
+        for (int s = 0; s < scoresArray.length; s++) {
             double percentage = (double) scoresArray[s] / (double) totalScores;
-            percentage = Math.round(percentage * 10000)/100;
+            percentage = Math.round(percentage * 10000) / 100;
             JLabel tempLabel = new JLabel();
             tempLabel.setFont(Driver.fontBold.deriveFont(24f));
             tempLabel.setText(typesArray[s] + ": " + String.valueOf(percentage) + "%" + " (" + scoresArray[s] + " times)");
@@ -154,7 +154,7 @@ public class PanelEnd extends JPanel {
         songStatsPanel.add(scoreLabel);
 
         // Displays the overall accuracy
-        this.accuracy = Math.round(this.accuracy * 10000)/100;
+        this.accuracy = Math.round(this.accuracy * 10000) / 100;
         JLabel accuracyLabel = new JLabel(" Your Accuracy: " + String.valueOf(this.accuracy) + "%");
         accuracyLabel.setFont(Driver.fontBold.deriveFont(24f));
         songStatsPanel.add(Box.createRigidArea(new Dimension(0, 50)));
@@ -163,7 +163,7 @@ public class PanelEnd extends JPanel {
 
     @SuppressWarnings("serial")
     private class BackAction extends AbstractAction {
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             backButtonLayout.backButton.doClick();
         }
     }
@@ -172,8 +172,7 @@ public class PanelEnd extends JPanel {
      * An experimental class that graphs the score distribution.
      * This class is currently not used.
      */
-    public class GraphComponent extends JComponent
-    {
+    public class GraphComponent extends JComponent {
         private int x;
         private int y;
         private double percentage;
@@ -182,10 +181,9 @@ public class PanelEnd extends JPanel {
         private int maxHeight = 300;
 
         @Override
-        public void paint(Graphics g)
-        {
+        public void paint(Graphics g) {
             g.setColor(color);
-            int height = (int) (percentage*maxHeight);
+            int height = (int) (percentage * maxHeight);
             g.drawRect(x, y, this.width, height);
             g.fillRect(x, y, this.width, height);
         }

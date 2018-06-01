@@ -14,70 +14,71 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 
 /**
-* Song select screen
-*/
+ * Song select screen
+ */
 @SuppressWarnings("serial")
 public class PanelSelect extends JPanel {
 
     /**
-    * Main JFrame this panel is drawn upon
-    */
+     * Main JFrame this panel is drawn upon
+     */
     final private Window owner;
     /**
-    * Height of GUI window
-    */
+     * Height of GUI window
+     */
     private int height;
     /**
-    * Width of GUI window
-    */
+     * Width of GUI window
+     */
     private int width;
     /**
-    * Layout for the back button
-    */
+     * Layout for the back button
+     */
     private PanelBack backButtonLayout;
 
     /**
-    * List of playable songs
-    */
+     * List of playable songs
+     */
     private DefaultListModel<String> songs = new DefaultListModel<>();
-     /**
-    * Array of song names
-    */
+    /**
+     * Array of song names
+     */
     private String[] songNameArray;
-     /**
-    * Array of song assets paths
-    */
+    /**
+     * Array of song assets paths
+     */
     private String[] songDirectoryArray;
 
     /**
-    * JList of songs
-    */
+     * JList of songs
+     */
     private JList songList;
     /**
-    * Section for information on selected song
-    */
+     * Section for information on selected song
+     */
     public static JPanel songInfoPanel = new JPanel();
-   
+
     /**
-    * Button to select the previous song
-    */
+     * Button to select the previous song
+     */
     private JButton leftButton;
     /**
-    * Button to select the next song
-    */
+     * Button to select the next song
+     */
     private JButton rightButton;
-     /**
-    * Button to begin playing the selected song
-    */
+    /**
+     * Button to begin playing the selected song
+     */
     public static JButton playButton;
 
-    
+
     /**
-    * Creates a new PanelSelect on the JFrame Owner with the given width and height
-    * @param owner JFrame window
-    * @param width Width of window
-    * @param height Height of window
-    */
+     * Creates a new PanelSelect on the JFrame Owner with the given width and height
+     *
+     * @param owner  JFrame window
+     * @param width  Width of window
+     * @param height Height of window
+     */
     public PanelSelect(Window owner, int width, int height) {
 
         this.width = width;
@@ -88,27 +89,27 @@ public class PanelSelect extends JPanel {
     }
 
     /**
-    * Draws the background
-    */
+     * Draws the background
+     */
     public void paintComponent(Graphics g) {
         g.setColor(Driver.bgColor);
         g.fillRect(0, 0, width, height);
     }
 
-    /** 
-    * Draws all elements on the screen. 
-    * Also sets key bindings.
-    */
+    /**
+     * Draws all elements on the screen.
+     * Also sets key bindings.
+     */
     private void createGUI() {
-        
+
         // Create a new layout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
+
         // Create a back button
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         mainPanel.setBackground(Driver.bgColor);
-   
+
         backButtonLayout = new PanelBack();
         backButtonLayout.backButton.addActionListener(event -> {
             SwingUtilities.invokeLater(() -> owner.showView(new PanelHome(owner, Driver.width, Driver.height)));
@@ -116,7 +117,7 @@ public class PanelSelect extends JPanel {
 
         add(backButtonLayout);
 
-        
+
         initSongs();
 
         // Adds left and right buttons for switching selected song
@@ -177,8 +178,8 @@ public class PanelSelect extends JPanel {
 
         songList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()){
-                    JList source = (JList)event.getSource();
+                if (!event.getValueIsAdjusting()) {
+                    JList source = (JList) event.getSource();
                     int selectedIndex = source.getSelectedIndex();
                     try {
                         String songAbsolutePath = songDirectoryArray[selectedIndex] + File.separator + songNameArray[selectedIndex];
@@ -194,12 +195,12 @@ public class PanelSelect extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 changeSongListener(1);
             }
-        } );
+        });
 
         mainPanel.add(songList);
 
         add(mainPanel);
-        
+
         // Key bindings
         int backMap = JComponent.WHEN_IN_FOCUSED_WINDOW;
         InputMap imap = this.getInputMap(backMap);
@@ -225,8 +226,8 @@ public class PanelSelect extends JPanel {
     }
 
     /**
-    * Gets list of songs from assets directory
-    */
+     * Gets list of songs from assets directory
+     */
     private void initSongs() {
         File songDirectory = new File(Driver.projectPath + "/assets/songs/");
         File[] songFiles = songDirectory.listFiles(new FileFilter() {
@@ -239,7 +240,7 @@ public class PanelSelect extends JPanel {
         songNameArray = new String[songFiles.length];
         songDirectoryArray = new String[songFiles.length];
 
-        for(int i = 0; i < songFiles.length; i++) {
+        for (int i = 0; i < songFiles.length; i++) {
             songs.addElement(songFiles[i].getName().replaceAll("_", " "));
             songNameArray[i] = songFiles[i].getName() + ".csm";
             songDirectoryArray[i] = songFiles[i].getAbsolutePath();
@@ -247,30 +248,32 @@ public class PanelSelect extends JPanel {
     }
 
     /**
-    * Checks if the selected song was changed
-    * @param value Value thatthe selected song was changed by
-    */
+     * Checks if the selected song was changed
+     *
+     * @param value Value thatthe selected song was changed by
+     */
     private void changeSongListener(int value) {
         int currentIndex = songList.getSelectedIndex();
         int newIndex = currentIndex + value;
-        if(newIndex < 0) {
+        if (newIndex < 0) {
             newIndex = songNameArray.length + value;
-        } else if(newIndex >= songNameArray.length) {
+        } else if (newIndex >= songNameArray.length) {
             newIndex = newIndex - songNameArray.length;
         }
 
         songList.setSelectedIndex(newIndex);
     }
 
-    /** 
-    * Grabs information about the selected song
-    * @param songFilename .csm file of selected song
-    * @param songDirectory Selected song's location in assets folder
-    * @throws IOException if .csm file does not exist
-    */
+    /**
+     * Grabs information about the selected song
+     *
+     * @param songFilename  .csm file of selected song
+     * @param songDirectory Selected song's location in assets folder
+     * @throws IOException if .csm file does not exist
+     */
     private void setSongInfoPanel(String songFilename, String songDirectory) throws Exception {
         songInfoPanel.removeAll();
-         
+
         Simfile currentSong = new Simfile(songFilename, 0.0);
 
         // your directory
@@ -285,7 +288,7 @@ public class PanelSelect extends JPanel {
             })[0];
         } catch (Exception e) {
             String s = File.separator;
-            songCoverFile = new File(Driver.projectPath+"/assets/images/genericCover.jpg");
+            songCoverFile = new File(Driver.projectPath + "/assets/images/genericCover.jpg");
         }
 
         Image songCoverImage = ImageIO.read(songCoverFile);
@@ -309,11 +312,16 @@ public class PanelSelect extends JPanel {
         String songGenre = "GENRE: " + currentSong.Genre();
         String songBPM = "BPM: " + (int) currentSong.BPM()[0][1];
 
-        JLabel songTitleLabel = new JLabel(songTitle); songTitleLabel.setFont(Driver.standardFont);
-        JLabel songArtistLabel = new JLabel(songArtist); songArtistLabel.setFont(Driver.standardFont);
-        JLabel songYearLabel = new JLabel(songYear); songYearLabel.setFont(Driver.standardFont);
-        JLabel songGenreLabel = new JLabel(songGenre); songGenreLabel.setFont(Driver.standardFont);
-        JLabel songBPMLabel = new JLabel(songBPM); songBPMLabel.setFont(Driver.standardFont);
+        JLabel songTitleLabel = new JLabel(songTitle);
+        songTitleLabel.setFont(Driver.standardFont);
+        JLabel songArtistLabel = new JLabel(songArtist);
+        songArtistLabel.setFont(Driver.standardFont);
+        JLabel songYearLabel = new JLabel(songYear);
+        songYearLabel.setFont(Driver.standardFont);
+        JLabel songGenreLabel = new JLabel(songGenre);
+        songGenreLabel.setFont(Driver.standardFont);
+        JLabel songBPMLabel = new JLabel(songBPM);
+        songBPMLabel.setFont(Driver.standardFont);
 
         songInfoPanel.add(songCover);
         songInfoPanel.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -329,44 +337,45 @@ public class PanelSelect extends JPanel {
         songInfoPanel.repaint();
     }
 
-    /** 
-    * Changes selected song or plays song based on keypress
-    */
+    /**
+     * Changes selected song or plays song based on keypress
+     */
     @SuppressWarnings("serial")
     private class KeyAction extends AbstractAction {
 
         /**
-        * Name of the key that was pressed
-        */
+         * Name of the key that was pressed
+         */
         private String key;
-        
-        /** 
-        * Checks which key was pressed 
-        * @param key The key that was pressed
-        */
-        public KeyAction (String key) {
+
+        /**
+         * Checks which key was pressed
+         *
+         * @param key The key that was pressed
+         */
+        public KeyAction(String key) {
             this.key = key;
         }
 
         /**
-        * Goes back, changes selected song, or plays selected song based on the key that was pressed.
-        */
-        public void actionPerformed (ActionEvent e) {
+         * Goes back, changes selected song, or plays selected song based on the key that was pressed.
+         */
+        public void actionPerformed(ActionEvent e) {
             switch (key) {
-                case "return" :
+                case "return":
                     backButtonLayout.backButton.doClick();
                     break;
-                case "left" :
+                case "left":
                     leftButton.doClick();
                     break;
-                case "right" :
+                case "right":
                     rightButton.doClick();
                     break;
-                case "play" :
+                case "play":
                     playButton.doClick();
                     break;
             }
-            
+
         }
 
     }

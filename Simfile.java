@@ -46,7 +46,7 @@ public class Simfile {
      * A string containing all the notes in a simfile.
      */
     private String notestr;
-    
+
     /**
      * A list of strings containing all the notes in a simfile, split by beat.
      */
@@ -244,7 +244,7 @@ public class Simfile {
      */
     public int NoteCount() {
         int count = 0;
-        for (List<String> sub: this.Notes()) {
+        for (List<String> sub : this.Notes()) {
             count += sub.size();
         }
 
