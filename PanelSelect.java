@@ -14,7 +14,7 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 
 /**
-* Song Select Screen
+* Song select screen
 */
 @SuppressWarnings("serial")
 public class PanelSelect extends JPanel {
@@ -88,7 +88,7 @@ public class PanelSelect extends JPanel {
     }
 
     /**
-    * Draws background 
+    * Draws the background
     */
     public void paintComponent(Graphics g) {
         g.setColor(Driver.bgColor);
@@ -104,7 +104,7 @@ public class PanelSelect extends JPanel {
         // Create a new layout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
-        // Create a back buttton
+        // Create a back button
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         mainPanel.setBackground(Driver.bgColor);
@@ -248,7 +248,7 @@ public class PanelSelect extends JPanel {
 
     /**
     * Checks if the selected song was changed
-    * @param value How much the  selected song was changed by
+    * @param value Value thatthe selected song was changed by
     */
     private void changeSongListener(int value) {
         int currentIndex = songList.getSelectedIndex();

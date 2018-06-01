@@ -7,19 +7,53 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+/**
+ * Screen displayed when song has ended
+ */
 @SuppressWarnings("serial")
 public class PanelEnd extends JPanel {
-
+    /**
+     * Main JFrame this panel is drawn upon
+     */
     final private Window owner;
+    /**
+     * Height of GUI window
+     */
     private int height;
+    /**
+     * Width of GUI window
+     */
     private int width;
+    /**
+     * Combined accuracy of all arrows pressed during the game
+     */
     private double accuracy;
+    /**
+     * List of individual scores for all arrows pressed during the game
+     */
     private List<Integer> scores;
-    private PanelBack backButtonLayout;
 
+    /**
+     * Layout for the back button
+     */
+    private PanelBack backButtonLayout;
+    /**
+     * Panel containing information of the song that was played during the game
+     */
     private JPanel songInfoPanel = new JPanel();
+    /**
+     * Panel containing various statistics of the previous game
+     */
     private JPanel songStatsPanel = new JPanel();
 
+    /**
+     *
+     * @param owner JFrame window
+     * @param width Width of window
+     * @param height Height of window
+     * @param accuracy Total accuracy of all arrows pressed in game
+     * @param scores List of scores for all arrows pressed
+     */
     public PanelEnd(Window owner, int width, int height, double accuracy, List<Integer> scores) {
 
         this.width = width;
@@ -31,11 +65,19 @@ public class PanelEnd extends JPanel {
         createGUI();
     }
 
+    /**
+     * Draws the background
+     * @param g Required graphics parameter
+     */
     public void paintComponent(Graphics g) {
         g.setColor(Driver.bgColor);
         g.fillRect(0, 0, width, height);
     }
 
+    /**
+     * Draws all elements on the screen.
+     * Also sets key bindings.
+     */
     private void createGUI() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
@@ -60,6 +102,9 @@ public class PanelEnd extends JPanel {
         owner.requestFocus();
     }
 
+    /**
+     * Retrieves PanelSelect's song info and displays it on the screen
+     */
     private void setSongInfoPanel() {
         songInfoPanel = PanelSelect.songInfoPanel;
         songInfoPanel.remove(PanelSelect.playButton);
@@ -67,6 +112,9 @@ public class PanelEnd extends JPanel {
         add(songInfoPanel);
     }
 
+    /**
+     * Displays various game statistics on the screen
+     */
     private void setSongStatsPanel() {
         songStatsPanel.setLayout(new BoxLayout(songStatsPanel, BoxLayout.Y_AXIS));
         songStatsPanel.setBackground(Driver.bgColor);
@@ -82,10 +130,12 @@ public class PanelEnd extends JPanel {
         int[] scoresArray = new int[4];
         String[] typesArray = new String[] {"MISS", "GOOD", "GREAT", "PERFECT"};
         Color[] colorsArray = new Color[] {PanelPlay.colorMiss, PanelPlay.colorGood, PanelPlay.colorGreat, PanelPlay.colorPerfect};
+        // Iterates through the list and creates sums
         for (Integer score : scores) {
             scoresArray[score]++;
             totalScore += score;
         }
+        // Displays a JLabel for each type of judgement
         for(int s = 0; s < scoresArray.length; s++) {
             double percentage = (double) scoresArray[s] / (double) totalScores;
             percentage = Math.round(percentage * 10000)/100;
@@ -97,11 +147,13 @@ public class PanelEnd extends JPanel {
         }
         songStatsPanel.add(Box.createHorizontalGlue());
 
+        // Displays the total (summed) score
         JLabel scoreLabel = new JLabel(" Your Total Score: " + String.valueOf(totalScore));
         scoreLabel.setFont(Driver.fontBold.deriveFont(24f));
         songStatsPanel.add(Box.createRigidArea(new Dimension(0, 30)));
         songStatsPanel.add(scoreLabel);
 
+        // Displays the overall accuracy
         this.accuracy = Math.round(this.accuracy * 10000)/100;
         JLabel accuracyLabel = new JLabel(" Your Accuracy: " + String.valueOf(this.accuracy) + "%");
         accuracyLabel.setFont(Driver.fontBold.deriveFont(24f));
@@ -116,7 +168,10 @@ public class PanelEnd extends JPanel {
         }
     }
 
-    // Experimental graph class
+    /**
+     * An experimental class that graphs the score distribution.
+     * This class is currently not used.
+     */
     public class GraphComponent extends JComponent
     {
         private int x;

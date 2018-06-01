@@ -1,8 +1,3 @@
-/**
- * Short for simulation file.
- * Reads and parses .csm files
- */
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -11,6 +6,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Short for simulation file.
+ * Reads, parses, and stores data for .csm files.
+ */
 public class Simfile {
 
     /**

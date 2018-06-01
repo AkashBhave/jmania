@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
-* Settings Screen
+* Settings screen
 */
 @SuppressWarnings("serial")
 public class PanelSettings extends JPanel {

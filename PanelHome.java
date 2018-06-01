@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 
 /* 
-* Home Screen/ Main Menu
+* Home screen / main menu
 */
 @SuppressWarnings("serial")
 public class PanelHome extends JPanel {
