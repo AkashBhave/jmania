@@ -260,9 +260,9 @@ public class PanelPlay extends JPanel implements ActionListener {
     private JLabel scoreLabel = new JLabel();
 
     public static Color colorPerfect = new Color(56, 142, 60);
-    public Color colorGreat = new Color(245, 124, 0);
-    public Color colorGood = new Color(251, 192, 45);
-    public Color colorMiss = new Color(211, 47, 47);
+    public static Color colorGreat = new Color(245, 124, 0);
+    public static Color colorGood = new Color(251, 192, 45);
+    public static Color colorMiss = new Color(211, 47, 47);
 
     /**
      * A function that adds to the note index variable, in case variables must be static within a function.
@@ -356,7 +356,7 @@ public class PanelPlay extends JPanel implements ActionListener {
     }
 
     /**
-     * A function that changes the song's volume (loudness)
+     * Changes the song's volume (loudness) based on user-defined settings
      */
     private void adjustSongVolume() throws IOException {
         Properties gameProps = new Properties();
@@ -368,6 +368,20 @@ public class PanelPlay extends JPanel implements ActionListener {
         float clipVolStep = clipRange / 100;
         float finalVolume = gainControl.getMinimum() + (clipVolStep*songVolume);
         gainControl.setValue(finalVolume);
+    }
+
+    /**
+     * Stops the game by ending the reading of the simfile and not reading the audio
+     */
+    private void endRound() {
+        // Stops reading the simfile
+        tm.stop();
+        audioThread.interrupt();
+        // Stops playing the song
+        songstarted = false;
+        music.stop();
+        music.flush();
+        // Sets the window to show PanelSelect
     }
 
     /**
@@ -399,20 +413,6 @@ public class PanelPlay extends JPanel implements ActionListener {
 
         topLayout.setVisible(true);
         add(topLayout);
-    }
-
-    /**
-     * Stops the game (stops drawing and playing audio)
-     */
-    private void endRound() {
-        // Stops reading the simfile
-        tm.stop();
-        audioThread.interrupt();
-        // Stops playing the song
-        songstarted = false;
-        music.stop();
-        music.flush();
-        // Sets the window to show PanelSelect
     }
 
     /**
@@ -642,8 +642,7 @@ public class PanelPlay extends JPanel implements ActionListener {
             milltime = temptime;
         }
 
-        // redraw the canvas after all is said and done
-
+        // Redraw the canvas
         if (!songstarted) {
             audioThread = new Thread(new RunAudio(music));
             audioThread.start();
@@ -653,7 +652,7 @@ public class PanelPlay extends JPanel implements ActionListener {
         micro = (double) music.getMicrosecondPosition();
         double second = micro / 1000000;
 
-        if (noteindex < smf.NoteCount()) { // so we don't run out of notes
+        if (noteindex < smf.NoteCount()) { // So that the game doesn't run out of notes
             if (second > Double.parseDouble(timestamp.get(noteindex).get(0)) - 1.0) {
                 loadArrow(timestamp.get(noteindex).get(1));
                 y[noteindex] = 800;
