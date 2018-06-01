@@ -25,11 +25,11 @@ public class PanelSelect extends JPanel {
     private String[] songDirectoryArray;
 
     private JList songList;
-    private JPanel songInfoPanel = new JPanel();
+    public static JPanel songInfoPanel = new JPanel();
 
     private JButton leftButton;
     private JButton rightButton;
-    private JButton playButton;
+    public static JButton playButton;
 
     public PanelSelect(Window owner, int width, int height) {
 

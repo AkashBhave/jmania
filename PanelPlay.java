@@ -91,6 +91,12 @@ public class PanelPlay extends JPanel implements ActionListener {
     private JLabel accuracyLabel = new JLabel();
     private JLabel scoreLabel = new JLabel();
 
+    public static Color colorPerfect = new Color(56, 142, 60);
+    public Color colorGreat = new Color(245, 124, 0);
+    public Color colorGood = new Color(251, 192, 45);
+    public Color colorMiss = new Color(211, 47, 47);
+
+
 
     public int addnoteindex() // literally just for the actionlistener
     {
@@ -200,7 +206,9 @@ public class PanelPlay extends JPanel implements ActionListener {
         topLayout.add(topLayout.backButton);
         topLayout.backButton.addActionListener(event -> {
             endRound();
-            SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
+//            SwingUtilities.invokeLater(() -> owner.showView(new PanelSelect(owner, Driver.width, Driver.height)));
+            SwingUtilities.invokeLater(() -> owner.showView(new PanelEnd(owner, Driver.width, Driver.height, this.calcAccuracy(), this.scores)));
+
         });
         topLayout.backButton.setText(" Exit");
         topLayout.add(Box.createHorizontalGlue());
@@ -557,19 +565,19 @@ public class PanelPlay extends JPanel implements ActionListener {
         switch (judge) {
             case 3:
                 judgeLabel.setText("PERFECT");
-                judgeLabel.setForeground(new Color(56, 142, 60));
+                judgeLabel.setForeground(colorPerfect);
                 break;
             case 2:
                 judgeLabel.setText("GREAT");
-                judgeLabel.setForeground(new Color(245, 124, 0));
+                judgeLabel.setForeground(colorGreat);
                 break;
             case 1:
                 judgeLabel.setText("GOOD");
-                judgeLabel.setForeground(new Color(251, 192, 45));
+                judgeLabel.setForeground(colorGood);
                 break;
             case 0:
                 judgeLabel.setText("MISS");
-                judgeLabel.setForeground(new Color(211, 47, 47));
+                judgeLabel.setForeground(colorMiss);
                 break;
 
         }
