@@ -85,6 +85,10 @@ public class Simfile {
     /**
      * Create a Simfile object, given a simfile filename (.csm) and an offset in seconds.
      * The offset should only be 0.0 unless the game starts too slow or too fast on every song.
+     *
+     * @param filename The filename of the .csm file
+     * @param globaloffset The number of milliseconds to offset the reading of the file by
+     * @throws Exception Throws a FileNotFoundException in case the .csm is not found
      */
     public Simfile(String filename, double globaloffset) throws Exception {
         this.globaloffset = globaloffset;
@@ -98,6 +102,7 @@ public class Simfile {
     /**
      * Returns the title (name) of the song as a String, which is specified in the simfile.
      * If there is no title specified, it will return "none".
+     * @return The title of the song
      */
     public String Title() {
         for (int i = 0; i < sim.length; i++) {
@@ -112,6 +117,7 @@ public class Simfile {
      * Returns the subtitle of the song as a String, which is specified in the simfile.
      * This may contain relevant information that may not be in the actual song title.
      * If there is no subtitle specified, it will return "none".
+     * @return The subtitle for the song
      */
     public String Subtitle() {
         for (int i = 0; i < sim.length; i++) {
@@ -125,6 +131,7 @@ public class Simfile {
     /**
      * Returns the artist of the song as a String, which is specified in the simfile.
      * If there is no artist specified, it will return "none".
+     * @return The name of the artist
      */
     public String Artist() {
         for (int i = 0; i < sim.length; i++) {
@@ -138,6 +145,7 @@ public class Simfile {
     /**
      * Returns the genre of the song as a String, which is specified in the simfile.
      * If there is no genre specified, it will return "none".
+     * @return The genre(s) of the song
      */
     public String Genre() {
         for (int i = 0; i < sim.length; i++) {
@@ -151,6 +159,7 @@ public class Simfile {
     /**
      * Returns the year of the song as an integer, which is specified in the simfile.
      * If there is no year specified, it will return 0.
+     * @return The year the song was released
      */
     public int Year() {
         for (int i = 0; i < sim.length; i++) {
@@ -164,6 +173,7 @@ public class Simfile {
     /**
      * Returns the audio file as a String, which is specified in the simfile.
      * If there is no audio file specified, it will return "none".
+     * @return The name of the .wav file that this Simfile corresponds to
      */
     public String AudioFile() {
         for (int i = 0; i < sim.length; i++) {
@@ -179,6 +189,7 @@ public class Simfile {
      * Returns the BPM (beats per minute) of the song as a two-dimensional double array, which is specified in the simfile.
      * The number of beats into the song is the first double in each array, followed by the actual BPM.
      * If there is no BPM specified, it will return a blank array.
+     * @return A 2D array consisting of all BPMs (and changes if any) and their position in the song
      */
     public double[][] BPM() {
         for (int i = 0; i < sim.length; i++) {
@@ -199,6 +210,7 @@ public class Simfile {
     /**
      * Returns the offset (delay) of the song in seconds as an integer, which is specified in the simfile.
      * If there is no offset specified, it will return 0.
+     * @return The amount of seconds that the song should be offset by
      */
     public double Offset() {
         for (int i = 0; i < sim.length; i++) {
@@ -215,6 +227,7 @@ public class Simfile {
      * For example, 0100 is up, and 0001 is right.
      * Each list of strings inside the main list is split by beat, meaning that if there are 8 strings in an array, the notes are split into 1/8 beats.
      * If there are no notes in the simfile, a blank array will be returned.
+     * @return A 2D list of all notes in the song
      */
     public List<List<String>> Notes() {
         note = new ArrayList<List<String>>();
@@ -241,6 +254,7 @@ public class Simfile {
 
     /**
      * Returns the number of notes in the song's simfile as an integer.
+     * @return The number of total notes in the song
      */
     public int NoteCount() {
         int count = 0;
@@ -256,6 +270,7 @@ public class Simfile {
      * These are returned as a mutable two-dimensional list of Strings, and are specified in the simfile.
      * The strings are the same as the Notes() function for arrows, and the times are doubles converted into String objects.
      * If there are no notes in the simfile, a blank array will be returned.
+     * @return A 2D list of which notes should occur in each measure
      */
     public List<List<String>> NotesTime() {
         offset = this.Offset();
