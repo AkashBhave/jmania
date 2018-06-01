@@ -1,12 +1,10 @@
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 @SuppressWarnings("serial")

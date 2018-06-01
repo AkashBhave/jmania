@@ -1,5 +1,8 @@
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 /**
 * JFrame upon which GUI Panels are drawn
@@ -36,6 +39,7 @@ public class Window extends JFrame {
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setResizable(false);
 
         // Adds a center panel
         view = new JPanel(new BorderLayout());
